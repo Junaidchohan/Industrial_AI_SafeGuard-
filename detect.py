@@ -344,6 +344,66 @@ class SafetyDetector:
         cv2.putText(frame, "SAFEGUARD AI | STEEL PLANT ALPHA",
                     (10, 22), font, 0.5, (180, 180, 180), 1, cv2.LINE_AA)
 
+    # - Splash / standby frame shown before monitoring starts -
+    def generate_splash_frame(self, w: int = 960, h: int = 540) -> np.ndarray:
+        """
+        Returns a branded standby frame (numpy array, BGR).
+        Displayed in the video panel before the user presses START.
+        """
+        frame = np.zeros((h, w, 3), dtype=np.uint8)
+
+        # Dark gradient background
+        for y in range(h):
+            val = int(18 + 20 * y / h)
+            frame[y, :] = (val, val, val)
+
+        font_big  = cv2.FONT_HERSHEY_DUPLEX
+        font_med  = cv2.FONT_HERSHEY_SIMPLEX
+        green     = (0, 210, 80)
+        white     = (220, 220, 220)
+        grey      = (120, 120, 120)
+
+        # Centre cross-hair decoration
+        cx, cy = w // 2, h // 2
+        cv2.line(frame, (cx - 60, cy), (cx + 60, cy), green, 1)
+        cv2.line(frame, (cx, cy - 60), (cx, cy + 60), green, 1)
+        cv2.circle(frame, (cx, cy), 80, (40, 40, 40), 1)
+        cv2.circle(frame, (cx, cy), 40, (50, 50, 50), 1)
+
+        # Title
+        title = "SAFEGUARD AI"
+        (tw, th), _ = cv2.getTextSize(title, font_big, 1.4, 2)
+        cv2.putText(frame, title, (cx - tw // 2, cy - 110),
+                    font_big, 1.4, green, 2, cv2.LINE_AA)
+
+        # Subtitle
+        sub = "Industrial Safety Monitoring Platform"
+        (sw, _), _ = cv2.getTextSize(sub, font_med, 0.6, 1)
+        cv2.putText(frame, sub, (cx - sw // 2, cy - 75),
+                    font_med, 0.6, white, 1, cv2.LINE_AA)
+
+        # Status line
+        status = "[ SYSTEM READY ]  Press  START MONITOR  to begin"
+        (stw, _), _ = cv2.getTextSize(status, font_med, 0.55, 1)
+        cv2.putText(frame, status, (cx - stw // 2, cy + 110),
+                    font_med, 0.55, green, 1, cv2.LINE_AA)
+
+        # Version tag bottom-right
+        ver = "v2.4.1 | YOLOv8 Engine"
+        (vw, _), _ = cv2.getTextSize(ver, font_med, 0.42, 1)
+        cv2.putText(frame, ver, (w - vw - 12, h - 12),
+                    font_med, 0.42, grey, 1, cv2.LINE_AA)
+
+        # Timestamp bottom-left
+        ts = datetime.now().strftime("%Y-%m-%d  %H:%M:%S")
+        cv2.putText(frame, ts, (12, h - 12),
+                    font_med, 0.42, grey, 1, cv2.LINE_AA)
+
+        # Border
+        cv2.rectangle(frame, (6, 6), (w - 6, h - 6), (50, 50, 50), 1)
+
+        return frame
+
     # - Risk summary for dashboard -
     def get_risk_summary(self, detections: list) -> dict:
         workers    = sum(1 for d in detections if d.cls == "person")

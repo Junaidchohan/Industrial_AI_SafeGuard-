@@ -1,0 +1,19 @@
+# SafeGuard AI – Requirements
+# pip install -r requirements.txt
+
+# Core AI / Detection
+ultralytics>=8.0.0         # YOLOv8 framework
+opencv-python>=4.8.0       # Computer vision
+numpy>=1.24.0              # Numerical computing
+torch>=2.0.0               # PyTorch (YOLOv8 backend)
+torchvision>=0.15.0
+
+# Dashboard
+streamlit>=1.28.0          # Web dashboard
+
+# Data & Utilities
+pandas>=2.0.0              # Data handling (log tables, charts)
+Pillow>=10.0.0             # Image processing
+
+# Dataset Download (optional)
+# roboflow                 # Uncomment if downloading from Roboflow

@@ -10,8 +10,14 @@ import pandas as pd
 import time
 import random
 from datetime import datetime, timedelta
-from detect import SafetyDetector
-from utils import AlertManager, RiskCalculator, IncidentLogger
+# ─── Safe imports for Streamlit Cloud ────────────────────────────────────────
+try:
+    from detect import SafetyDetector
+    from utils import AlertManager, RiskCalculator, IncidentLogger
+except Exception as e:
+    import streamlit as st
+    st.error(f"Import error: {e}")
+    st.stop()
 
 # ─── Page Config ──────────────────────────────────────────────────────────────
 st.set_page_config(

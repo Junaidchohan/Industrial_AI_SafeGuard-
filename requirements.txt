@@ -3,7 +3,7 @@
 
 # Core AI / Detection
 ultralytics>=8.0.0         # YOLOv8 framework
-opencv-python>=4.8.0       # Computer vision
+opencv-python-headless>=4.8.0       # Computer vision
 numpy>=1.24.0              # Numerical computing
 torch>=2.0.0               # PyTorch (YOLOv8 backend)
 torchvision>=0.15.0

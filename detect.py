@@ -65,15 +65,28 @@ class SafetyDetector:
         if not YOLO_AVAILABLE:
             print("[SafeGuard] ultralytics not installed – simulation mode active.")
             return
-        # Try custom weights first, then fall back to pretrained COCO
-        for path in [self.weights_path, "yolov8n.pt", "yolov8s.pt"]:
-            try:
-                self.model = YOLO(path)
-                print(f"[SafeGuard] Model loaded: {path}")
-                return
-            except Exception:
-                continue
-        print("[SafeGuard] All model loads failed – simulation mode active.")
+        import os, urllib.request
+        # On Streamlit Cloud, only load if weights already exist locally.
+        # Do NOT attempt auto-download (no write permissions + slow cold start).
+        for path in [self.weights_path]:
+            if os.path.exists(path):
+                try:
+                    self.model = YOLO(path)
+                    print(f"[SafeGuard] Custom model loaded: {path}")
+                    return
+                except Exception as e:
+                    print(f"[SafeGuard] Failed to load {path}: {e}")
+
+        # Try loading pretrained yolov8n (works if ultralytics cache exists)
+        try:
+            import warnings
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                self.model = YOLO("yolov8n.pt")
+            print("[SafeGuard] Pretrained YOLOv8n loaded.")
+        except Exception as e:
+            print(f"[SafeGuard] Model unavailable ({e}) – simulation mode active.")
+            self.model = None
 
     # ── Simulation workers (demo/fallback only) ───────────────────────────────
     def _init_sim_workers(self):

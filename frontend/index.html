@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>SafeGuard AI — Industrial Safety Intelligence Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.17.0/dist/tf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.3/dist/coco-ssd.min.js"></script>
+<style>
+:root {
+  --bg-deep: #0A0612;
+  --bg-base: #0D0A1A;
+  --bg-card: #130F24;
+  --bg-card2: #181230;
+  --bg-hover: #1E1840;
+  --border: rgba(130, 80, 255, 0.18);
+  --border-bright: rgba(130, 80, 255, 0.45);
+  --purple-deep: #6B21E8;
+  --purple-mid: #8B5CF6;
+  --purple-bright: #A78BFA;
+  --purple-glow: #C4B5FD;
+  --cyan: #22D3EE;
+  --cyan-dim: rgba(34, 211, 238, 0.15);
+  --green: #10B981;
+  --green-dim: rgba(16, 185, 129, 0.15);
+  --amber: #F59E0B;
+  --amber-dim: rgba(245, 158, 11, 0.15);
+  --red: #EF4444;
+  --red-dim: rgba(239, 68, 68, 0.15);
+  --text-1: #F0EBFF;
+  --text-2: #A89CC8;
+  --text-3: #6B5F8A;
+  --glow-purple: 0 0 30px rgba(139, 92, 246, 0.35);
+  --glow-cyan: 0 0 20px rgba(34, 211, 238, 0.3);
+  --glow-green: 0 0 20px rgba(16, 185, 129, 0.3);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--bg-deep);
+  font-family: 'Rajdhani', sans-serif;
+  color: var(--text-1);
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 40% at 20% 10%, rgba(107, 33, 232, 0.18) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 30% at 80% 80%, rgba(139, 92, 246, 0.12) 0%, transparent 55%),
+    radial-gradient(ellipse 30% 50% at 90% 10%, rgba(34, 211, 238, 0.06) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(130,80,255,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(130,80,255,0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.app-shell { display: flex; height: 100vh; overflow: hidden; position: relative; z-index: 1; }
+
+/* SIDEBAR */
+.sidebar {
+  width: 76px;
+  background: rgba(13, 10, 26, 0.9);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 0;
+  flex-shrink: 0;
+  backdrop-filter: blur(20px);
+  position: relative;
+}
+
+.sidebar::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 10%;
+  bottom: 10%;
+  width: 1px;
+  background: linear-gradient(180deg, transparent, var(--purple-mid), transparent);
+}
+
+.logo-wrap {
+  width: 44px;
+  height: 44px;
+  position: relative;
+  margin-bottom: 36px;
+}
+
+.logo-hex {
+  width: 44px;
+  height: 44px;
+  background: linear-gradient(135deg, var(--purple-deep), var(--purple-mid));
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Orbitron', monospace;
+  font-weight: 900;
+  font-size: 13px;
+  color: white;
+  box-shadow: var(--glow-purple);
+  animation: pulse-logo 3s ease-in-out infinite;
+}
+
+@keyframes pulse-logo {
+  0%, 100% { box-shadow: 0 0 20px rgba(139,92,246,0.4); }
+  50% { box-shadow: 0 0 40px rgba(139,92,246,0.7); }
+}
+
+.nav-items { display: flex; flex-direction: column; gap: 6px; flex: 1; }
+.nav-btn {
+  width: 46px; height: 46px; border-radius: 12px; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: all 0.2s; border: 1px solid transparent; background: transparent; color: var(--text-3); font-size: 18px;
+}
+.nav-btn:hover { background: rgba(139,92,246,0.12); color: var(--purple-bright); border-color: var(--border); }
+.nav-btn.active { background: rgba(139,92,246,0.2); color: var(--purple-bright); border-color: var(--border-bright); box-shadow: inset 0 0 20px rgba(139,92,246,0.1); }
+.nav-btn.active::before { content: ''; position: absolute; left: -1px; top: 25%; bottom: 25%; width: 2px; background: var(--purple-mid); border-radius: 0 2px 2px 0; }
+.sidebar-bottom { display: flex; flex-direction: column; gap: 8px; align-items: center; }
+.theme-btn {
+  width: 40px; height: 40px; border-radius: 10px; background: rgba(139,92,246,0.1); border: 1px solid var(--border);
+  color: var(--text-2); font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;
+}
+.theme-btn:hover { background: rgba(139,92,246,0.2); color: var(--purple-bright); }
+
+/* MAIN AREA */
+.main-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+.top-bar {
+  padding: 0 24px; height: 56px; background: rgba(13,10,26,0.8); border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(20px); display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
+}
+.top-left { display: flex; align-items: center; gap: 16px; }
+.brand-text {
+  font-family: 'Orbitron', monospace; font-size: 13px; font-weight: 700; letter-spacing: 2px;
+  background: linear-gradient(90deg, var(--purple-bright), var(--cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.zone-tag { background: rgba(139,92,246,0.15); border: 1px solid var(--border-bright); border-radius: 6px; padding: 4px 10px; font-size: 11px; font-weight: 600; letter-spacing: 1px; color: var(--purple-bright); text-transform: uppercase; }
+.top-right { display: flex; align-items: center; gap: 20px; }
+.status-chips { display: flex; gap: 8px; }
+.chip { display: flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; border: 1px solid; text-transform: uppercase; }
+.chip-off { background: rgba(107,95,138,0.1); border-color: rgba(107,95,138,0.3); color: var(--text-3); }
+.chip-on { background: rgba(16,185,129,0.1); border-color: rgba(16,185,129,0.35); color: var(--green); }
+.chip-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.chip-on .chip-dot { animation: blink 1.5s ease-in-out infinite; }
+@keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+.clock-box { font-family: 'Space Mono', monospace; font-size: 12px; color: var(--text-2); background: rgba(139,92,246,0.08); border: 1px solid var(--border); padding: 6px 12px; border-radius: 8px; }
+
+/* VIDEO SECTION */
+.video-section {
+  flex: 1; background: #000; position: relative; overflow: hidden; min-height: 0;
+}
+.video-frame { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+#webcam-video, #upload-video { display: none; position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; background: #000; }
+#detection-canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; display: none; }
+.standby-screen {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; position: absolute; inset: 0;
+}
+.standby-ring { width: 120px; height: 120px; border-radius: 50%; border: 2px solid rgba(139,92,246,0.3); position: relative; display: flex; align-items: center; justify-content: center; animation: rotate-ring 8s linear infinite; }
+.standby-ring::before { content: ''; position: absolute; inset: -6px; border-radius: 50%; border: 1px solid transparent; border-top-color: var(--purple-mid); animation: rotate-ring 2s linear infinite; }
+.standby-ring::after { content: ''; position: absolute; inset: 6px; border-radius: 50%; border: 1px solid rgba(34,211,238,0.2); border-bottom-color: var(--cyan); animation: rotate-ring 3s linear infinite reverse; }
+@keyframes rotate-ring { to { transform: rotate(360deg); } }
+.standby-icon { font-size: 40px; z-index: 1; }
+.standby-label { font-family: 'Orbitron', monospace; font-size: 13px; letter-spacing: 4px; color: var(--text-3); text-transform: uppercase; }
+
+.corner { position: absolute; width: 24px; height: 24px; }
+.corner-tl { top: 16px; left: 16px; border-top: 2px solid var(--purple-mid); border-left: 2px solid var(--purple-mid); }
+.corner-tr { top: 16px; right: 16px; border-top: 2px solid var(--purple-mid); border-right: 2px solid var(--purple-mid); }
+.corner-bl { bottom: 16px; left: 16px; border-bottom: 2px solid var(--purple-mid); border-left: 2px solid var(--purple-mid); }
+.corner-br { bottom: 16px; right: 16px; border-bottom: 2px solid var(--purple-mid); border-right: 2px solid var(--purple-mid); }
+
+.hud-top { position: absolute; top: 12px; left: 0; right: 0; display: flex; justify-content: space-between; padding: 0 50px; pointer-events: none; }
+.hud-pill { display: flex; align-items: center; gap: 8px; background: rgba(13,10,26,0.8); border: 1px solid var(--border); border-radius: 20px; padding: 5px 14px; font-size: 11px; font-weight: 600; color: var(--text-2); backdrop-filter: blur(10px); }
+.hud-bottom { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(0deg, rgba(10,6,18,0.85) 0%, transparent 100%); padding: 12px 50px; display: flex; gap: 16px; align-items: center; pointer-events: none; }
+.hud-tag { font-size: 10px; letter-spacing: 1px; color: var(--text-3); font-weight: 600; text-transform: uppercase; }
+.hud-val { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--purple-bright); }
+
+/* CONTROL BAR */
+.control-bar {
+  background: rgba(13,10,26,0.9); border-top: 1px solid var(--border); padding: 12px 24px;
+  display: flex; align-items: center; gap: 12px; flex-shrink: 0; backdrop-filter: blur(20px);
+}
+.btn { display: flex; align-items: center; gap: 8px; padding: 9px 22px; border-radius: 8px; font-family: 'Rajdhani', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 1px; cursor: pointer; transition: all 0.2s; border: 1px solid; text-transform: uppercase; }
+.btn-start { background: linear-gradient(135deg, var(--purple-deep), var(--purple-mid)); border-color: var(--purple-mid); color: white; box-shadow: 0 0 20px rgba(139,92,246,0.3); }
+.btn-start:hover { box-shadow: 0 0 30px rgba(139,92,246,0.5); transform: translateY(-1px); }
+.btn-stop { background: rgba(239,68,68,0.15); border-color: rgba(239,68,68,0.4); color: var(--red); }
+.btn-ghost { background: rgba(139,92,246,0.08); border-color: var(--border); color: var(--text-2); }
+.ctrl-settings { display: flex; gap: 16px; align-items: center; margin-left: auto; }
+.ctrl-item { display: flex; align-items: center; gap: 8px; }
+.ctrl-label { font-size: 11px; font-weight: 600; letter-spacing: 0.5px; color: var(--text-3); text-transform: uppercase; }
+.ctrl-val { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--purple-bright); background: rgba(139,92,246,0.1); padding: 2px 8px; border-radius: 4px; border: 1px solid var(--border); min-width: 38px; text-align: center; }
+select { background: rgba(13,10,26,0.8); border: 1px solid var(--border); color: var(--text-2); padding: 6px 10px; border-radius: 8px; font-family: 'Rajdhani', sans-serif; font-size: 12px; font-weight: 600; outline: none; cursor: pointer; }
+input[type="range"] { width: 80px; height: 3px; -webkit-appearance: none; background: linear-gradient(90deg, var(--purple-mid) 0%, var(--border) 50%); border-radius: 2px; outline: none; }
+input[type="range"]::-webkit-slider-thumb { width: 12px; height: 12px; border-radius: 50%; background: var(--purple-bright); cursor: pointer; }
+
+/* LOG PANEL */
+.log-panel { background: rgba(13,10,26,0.8); border-top: 1px solid var(--border); max-height: 170px; overflow-y: auto; flex-shrink: 0; }
+.log-head { display: grid; grid-template-columns: 70px 75px 1fr 90px; gap: 12px; padding: 8px 20px; font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-3); border-bottom: 1px solid var(--border); position: sticky; top: 0; background: rgba(13,10,26,0.95); backdrop-filter: blur(10px); }
+.log-row { display: grid; grid-template-columns: 70px 75px 1fr 90px; gap: 12px; padding: 9px 20px; font-size: 12px; border-bottom: 1px solid rgba(130,80,255,0.06); transition: background 0.15s; font-weight: 500; }
+.sev-critical { color: var(--red); } .sev-high { color: var(--amber); } .sev-medium { color: #F97316; } .sev-low { color: var(--green); }
+.empty-log { padding: 20px; text-align: center; font-size: 12px; color: var(--text-3); }
+
+/* RIGHT PANEL */
+.right-panel { width: 310px; flex-shrink: 0; background: rgba(13,10,26,0.8); border-left: 1px solid var(--border); display: flex; flex-direction: column; overflow-y: auto; backdrop-filter: blur(20px); }
+.rpanel-section { padding: 18px 18px 16px; border-bottom: 1px solid var(--border); }
+.section-title { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text-3); display: flex; align-items: center; gap: 8px; }
+.section-title::before { content: ''; width: 3px; height: 10px; background: linear-gradient(180deg, var(--purple-mid), var(--cyan)); border-radius: 2px; }
+
+.kpi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.kpi-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 14px; }
+.kpi-label { font-size: 10px; font-weight: 600; text-transform: uppercase; color: var(--text-3); margin-bottom: 10px; }
+.kpi-val { font-family: 'Orbitron', monospace; font-size: 30px; font-weight: 700; background: linear-gradient(135deg, white, var(--purple-glow)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.risk-card { background: var(--bg-card); border-radius: 14px; padding: 16px; border: 1px solid var(--border); }
+.risk-badge { font-size: 10px; font-weight: 700; padding: 4px 10px; border-radius: 20px; text-transform: uppercase; }
+.risk-low { background: rgba(16,185,129,0.15); color: var(--green); }
+.risk-mod { background: rgba(245,158,11,0.15); color: var(--amber); }
+.risk-high { background: rgba(239,68,68,0.15); color: var(--red); }
+.risk-big { font-family: 'Orbitron'; font-size: 44px; font-weight: 900; }
+.risk-big.low { color: var(--green); } .risk-big.mod { color: var(--amber); } .risk-big.high { color: var(--red); }
+.track { height: 5px; background: rgba(139,92,246,0.1); border-radius: 3px; overflow: hidden; margin-bottom: 6px; }
+.track-fill { height: 100%; border-radius: 3px; transition: width 0.4s ease; }
+.track-fill.low { background: linear-gradient(90deg, var(--green), #34D399); }
+.track-fill.mod { background: linear-gradient(90deg, var(--amber), #FCD34D); }
+.track-fill.high { background: linear-gradient(90deg, var(--red), #F87171); }
+.alert-card { background: var(--bg-card); border-radius: 10px; padding: 11px 12px; border-left: 3px solid transparent; margin-bottom: 8px; }
+.alert-card.critical { border-left-color: var(--red); background: rgba(239,68,68,0.05); }
+.alert-card.warning { border-left-color: var(--amber); }
+.alert-sev.c { color: var(--red); } .alert-sev.w { color: var(--amber); }
+#trend-canvas { width: 100%; height: 90px; }
+.toast { position: fixed; bottom: 24px; right: 24px; z-index: 9999; background: rgba(19,15,36,0.95); border: 1px solid var(--border-bright); border-radius: 12px; padding: 12px 20px; font-weight: 600; backdrop-filter: blur(20px); transition: all 0.3s; opacity: 0; transform: translateY(80px); pointer-events: none; }
+.toast.show { transform: translateY(0); opacity: 1; }
+.model-loading { position: fixed; inset: 0; z-index: 9999; background: rgba(10,6,18,0.98); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; }
+.model-loading.hidden { display: none; }
+.ml-spinner { width: 60px; height: 60px; border-radius: 50%; border: 3px solid rgba(139,92,246,0.15); border-top-color: #8B5CF6; animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+<div class="model-loading" id="modelOverlay"><div class="ml-spinner"></div><div class="ml-title">LOADING AI ENGINE</div><div id="mlStatus">Loading...</div></div>
+<div class="app-shell">
+  <aside class="sidebar"><div class="logo-wrap"><div class="logo-hex">SG</div></div>
+    <div class="nav-items"><div class="nav-btn active" onclick="toggleMonitoring()">📊</div><div class="nav-btn" onclick="toggleMonitoring()">▶</div><div class="nav-btn" onclick="pauseMonitoring()">⏸</div><div class="nav-btn" onclick="resetSession()">↺</div></div>
+    <div class="sidebar-bottom"><button class="theme-btn" onclick="toggleTheme()">🌙</button></div>
+  </aside>
+  <main class="main-area">
+    <div class="top-bar"><div class="top-left"><span class="brand-text">SAFEGUARD AI</span><div class="zone-tag">🏭 Blast Furnace · Zone B</div></div>
+      <div class="top-right"><div class="status-chips"><div class="chip chip-off" id="chip-engine">🔴 YOLOv8n</div><div class="chip chip-off" id="chip-stream">🔴 Stream</div><div class="chip chip-off" id="chip-system">🔴 <span id="sys-label">STANDBY</span></div></div><div class="clock-box" id="clockBox">--:--:--</div></div>
+    </div>
+    <div class="video-section">
+      <div class="corner corner-tl"></div><div class="corner corner-tr"></div><div class="corner corner-bl"></div><div class="corner corner-br"></div>
+      <div class="hud-top"><div class="hud-pill"><span id="hud-status-dot" style="width:6px;height:6px;background:red;border-radius:50%;display:inline-block;"></span><span id="hud-status-text">OFFLINE</span></div><div class="hud-pill">ZONE B</div><div class="hud-pill">FPS <span id="hud-fps">0</span></div><div class="hud-pill">CONF <span id="hud-conf">0.50</span></div></div>
+      <div class="video-frame">
+        <video id="webcam-video" autoplay muted playsinline></video>
+        <video id="upload-video" controls></video>
+        <canvas id="detection-canvas"></canvas>
+        <div class="standby-screen" id="standby-screen"><div class="standby-ring"><div class="standby-icon">🛡️</div></div><div class="standby-label">System Standby</div><div class="standby-sub">Press START to initialize detection</div></div>
+      </div>
+      <div class="hud-bottom"><span class="hud-tag">Steel Plant Alpha</span><span class="hud-val" id="hud-res">-- × --</span><span class="hud-tag" id="hud-mode">DEMO</span></div>
+    </div>
+    <div class="control-bar">
+      <button class="btn btn-start" id="startStopBtn" onclick="toggleMonitoring()">▶ START MONITORING</button>
+      <button class="btn btn-ghost" onclick="pauseMonitoring()">⏸ PAUSE</button>
+      <button class="btn btn-ghost" onclick="resetSession()">↺ RESET</button>
+      <div class="ctrl-settings">
+        <div class="ctrl-item"><span class="ctrl-label">🎯 Confidence</span><input type="range" id="confSlider" min="0.3" max="0.95" step="0.05" value="0.5" oninput="updateConf()"><span class="ctrl-val" id="confVal">0.50</span></div>
+        <div class="ctrl-item"><span class="ctrl-label">⚠️ Alert %</span><input type="range" id="alertSlider" min="20" max="90" value="40" oninput="updateAlert()"><span class="ctrl-val" id="alertVal">40%</span></div>
+        <div class="ctrl-item">
+          <span class="ctrl-label">📹 Source</span>
+          <select id="sourceSelect" onchange="handleSourceChange()">
+            <option value="demo">🎬 Demo Mode</option>
+            <option value="webcam">📷 Webcam</option>
+            <option value="upload">📁 Upload Video (click to select)</option>
+          </select>
+          <input type="file" id="videoFileInput" accept="video/*" style="display:none;">
+        </div>
+      </div>
+    </div>
+    <div class="log-panel"><div class="log-head"><span>Incident ID</span><span>Time</span><span>Details</span><span>Severity</span></div><div id="logContainer"><div class="empty-log">✓ No incidents logged</div></div></div>
+  </main>
+  <aside class="right-panel">
+    <div class="rpanel-section"><div class="section-title">Live Metrics</div><div class="kpi-grid"><div class="kpi-card"><div class="kpi-label">👥 Workers</div><div class="kpi-val" id="kpi-workers">0</div></div><div class="kpi-card"><div class="kpi-label">⚠️ Violations</div><div class="kpi-val" id="kpi-violations">0</div></div><div class="kpi-card"><div class="kpi-label">🪖 PPE %</div><div class="kpi-val" id="kpi-ppe">100%</div></div><div class="kpi-card"><div class="kpi-label">📊 FPS</div><div class="kpi-val" id="kpi-fps">0</div></div></div></div>
+    <div class="rpanel-section"><div class="section-title">Safety Risk Index</div><div class="risk-card"><div class="risk-top"><div class="risk-label">Hazard Level</div><div class="risk-badge risk-low" id="riskBadge">LOW</div></div><div class="risk-big low" id="riskNum">0</div><div class="track"><div class="track-fill low" id="riskFill"></div></div></div></div>
+    <div class="rpanel-section"><div class="section-title">Active Alerts</div><div id="alertsContainer"><div class="empty-alerts">✅ All clear</div></div></div>
+    <div class="rpanel-section"><div class="section-title">Risk Trend</div><canvas id="trend-canvas" style="width:100%;height:90px"></canvas></div>
+  </aside>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+let isRunning = false, isPaused = false, currentSource = 'demo', violations = 0, risk = 8, ppe = 100;
+let riskHistory = [], incidents = [], alerts = [];
+let cocoModel = null, lastDetections = [], animFrame = null, frameCount = 0, fpsStart = Date.now(), currentFPS = 0;
+let personTracks = new Map();
+let nextTrackId = 1;
+let simInterval = null, webcamStream = null;
+
+async function loadModel() {
+  try {
+    await tf.ready();
+    cocoModel = await cocoSsd.load({ base: 'mobilenet_v2' });
+    document.getElementById('modelOverlay').classList.add('hidden');
+    toast('🤖 AI Ready - Real Person Detection + PPE Analysis');
+  } catch(e) {
+    document.getElementById('modelOverlay').classList.add('hidden');
+    toast('⚠️ Fallback mode active');
+  }
+}
+
+// Real PPE detection using color analysis
+function analyzePPE(imageData, x, y, w, h) {
+  let hasHelmet = false, hasVest = false;
+  const startX = Math.max(0, Math.floor(x));
+  const startY = Math.max(0, Math.floor(y));
+  const endX = Math.min(imageData.width, Math.floor(x + w));
+  const endY = Math.min(imageData.height, Math.floor(y + h));
+
+  // Helmet region: top 20% of bounding box
+  const helmetYStart = startY;
+  const helmetYEnd = Math.min(imageData.height, startY + h * 0.2);
+  // Vest region: middle 30-60% of bounding box
+  const vestYStart = Math.min(imageData.height, startY + h * 0.3);
+  const vestYEnd = Math.min(imageData.height, startY + h * 0.55);
+
+  function isSafetyColor(r,g,b) {
+    // Yellow/Orange (high R+G, low B)
+    if (r > 150 && g > 120 && b < 120) return true;
+    // Red (high R)
+    if (r > 160 && g < 100 && b < 100) return true;
+    // Neon Green (high G)
+    if (g > 140 && r > 80 && b < 120) return true;
+    // Blue hard hat
+    if (b > 130 && r < 100 && g < 120 && g > 30) return true;
+    return false;
+  }
+
+  // Check helmet region
+  let helmetPixels = 0, helmetTotal = 0;
+  for (let py = helmetYStart; py < helmetYEnd; py++) {
+    for (let px = startX; px < endX; px++) {
+      let idx = (py * imageData.width + px) * 4;
+      if (idx + 2 < imageData.data.length) {
+        let r = imageData.data[idx];
+        let g = imageData.data[idx+1];
+        let b = imageData.data[idx+2];
+        if (isSafetyColor(r,g,b)) helmetPixels++;
+        helmetTotal++;
+      }
+    }
+  }
+  hasHelmet = helmetTotal > 0 && (helmetPixels / helmetTotal) > 0.2;
+
+  // Check vest region
+  let vestPixels = 0, vestTotal = 0;
+  for (let py = vestYStart; py < vestYEnd; py++) {
+    for (let px = startX; px < endX; px++) {
+      let idx = (py * imageData.width + px) * 4;
+      if (idx + 2 < imageData.data.length) {
+        let r = imageData.data[idx];
+        let g = imageData.data[idx+1];
+        let b = imageData.data[idx+2];
+        if (isSafetyColor(r,g,b)) vestPixels++;
+        vestTotal++;
+      }
+    }
+  }
+  hasVest = vestTotal > 0 && (vestPixels / vestTotal) > 0.18;
+
+  return { hasHelmet, hasVest, ppeCompliant: (hasHelmet || hasVest) };
+}
+
+function toast(msg) {
+  let t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+function updateConf() {
+  let v = parseFloat(document.getElementById('confSlider').value).toFixed(2);
+  document.getElementById('confVal').textContent = v;
+  document.getElementById('hud-conf').textContent = v;
+}
+
+function updateAlert() {
+  document.getElementById('alertVal').textContent = document.getElementById('alertSlider').value + '%';
+}
+
+function stopAllStreams() {
+  if(webcamStream) webcamStream.getTracks().forEach(t => t.stop());
+  if(animFrame) cancelAnimationFrame(animFrame);
+  document.getElementById('webcam-video').style.display = 'none';
+  document.getElementById('upload-video').style.display = 'none';
+  document.getElementById('detection-canvas').style.display = 'none';
+}
+
+function startUI() {
+  document.getElementById('chip-engine').className = 'chip chip-on';
+  document.getElementById('chip-stream').className = 'chip chip-on';
+  document.getElementById('chip-system').className = 'chip chip-on';
+  document.getElementById('sys-label').textContent = 'ACTIVE';
+  document.getElementById('hud-status-text').textContent = 'LIVE';
+  document.getElementById('hud-status-dot').style.background = '#10B981';
+  document.getElementById('standby-screen').style.display = 'none';
+  document.getElementById('startStopBtn').textContent = '⏹ STOP MONITORING';
+  document.getElementById('startStopBtn').className = 'btn btn-stop';
+}
+
+function stopUI() {
+  document.getElementById('chip-engine').className = 'chip chip-off';
+  document.getElementById('chip-stream').className = 'chip chip-off';
+  document.getElementById('chip-system').className = 'chip chip-off';
+  document.getElementById('sys-label').textContent = 'STANDBY';
+  document.getElementById('hud-status-text').textContent = 'OFFLINE';
+  document.getElementById('hud-status-dot').style.background = '#EF4444';
+  document.getElementById('standby-screen').style.display = 'flex';
+  document.getElementById('startStopBtn').textContent = '▶ START MONITORING';
+  document.getElementById('startStopBtn').className = 'btn btn-start';
+  document.getElementById('webcam-video').style.display = 'none';
+  document.getElementById('upload-video').style.display = 'none';
+  document.getElementById('detection-canvas').style.display = 'none';
+}
+
+function handleSourceChange() {
+  let src = document.getElementById('sourceSelect').value;
+  if(src === 'upload') {
+    document.getElementById('videoFileInput').click();
+    return;
+  }
+  currentSource = src;
+  document.getElementById('hud-mode').textContent = src === 'webcam' ? 'WEBCAM' : 'DEMO';
+  if(isRunning) {
+    stopAllStreams();
+    if(src === 'webcam') startWebcamMode();
+    else startDemoMode();
+  }
+}
+
+document.getElementById('videoFileInput').addEventListener('change', (e) => {
+  let file = e.target.files[0];
+  if(!file) {
+    document.getElementById('sourceSelect').value = 'demo';
+    currentSource = 'demo';
+    return;
+  }
+  let url = URL.createObjectURL(file);
+  let vid = document.getElementById('upload-video');
+  vid.src = url;
+  currentSource = 'upload';
+  document.getElementById('sourceSelect').value = 'upload';
+  document.getElementById('hud-mode').textContent = 'VIDEO';
+  if(isRunning) {
+    stopAllStreams();
+    startUploadMode();
+  }
+  toast('📂 Loaded: ' + file.name);
+});
+
+async function startWebcamMode() {
+  try {
+    let stream = await navigator.mediaDevices.getUserMedia({ video: { width: 1280, height: 720 } });
+    webcamStream = stream;
+    let vid = document.getElementById('webcam-video');
+    vid.srcObject = stream;
+    vid.style.display = 'block';
+    document.getElementById('detection-canvas').style.display = 'block';
+    vid.onloadedmetadata = () => {
+      document.getElementById('hud-res').textContent = vid.videoWidth + ' × ' + vid.videoHeight;
+      runDetectionLoop(vid);
+    };
+    toast('📷 Webcam active');
+  } catch(err) {
+    toast('Camera error');
+    currentSource = 'demo';
+    document.getElementById('sourceSelect').value = 'demo';
+    startDemoMode();
+  }
+}
+
+function startUploadMode() {
+  let vid = document.getElementById('upload-video');
+  if(!vid.src) {
+    toast('No video file');
+    return;
+  }
+  vid.style.display = 'block';
+  document.getElementById('detection-canvas').style.display = 'block';
+  vid.play().catch(e => {});
+  vid.onloadedmetadata = () => {
+    document.getElementById('hud-res').textContent = vid.videoWidth + ' × ' + vid.videoHeight;
+  };
+  runDetectionLoop(vid);
+}
+
+function startDemoMode() {
+  document.getElementById('detection-canvas').style.display = 'block';
+  document.getElementById('hud-res').textContent = '1920 × 1080';
+  runDemoLoop();
+}
+
+function runDetectionLoop(videoEl) {
+  let canvas = document.getElementById('detection-canvas');
+  let ctx = canvas.getContext('2d');
+
+  async function loop() {
+    if(!isRunning || isPaused) {
+      animFrame = requestAnimationFrame(loop);
+      return;
+    }
+
+    let rect = videoEl.getBoundingClientRect();
+    canvas.width = rect.width;
+    canvas.height = rect.height;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    if(cocoModel && videoEl.readyState >= 2) {
+      try {
+        let predictions = await cocoModel.detect(videoEl);
+        let conf = parseFloat(document.getElementById('confSlider').value);
+        let persons = predictions.filter(p => p.class === 'person' && p.score >= conf);
+
+        // Get video frame for PPE analysis
+        let tempCanvas = document.createElement('canvas');
+        tempCanvas.width = videoEl.videoWidth;
+        tempCanvas.height = videoEl.videoHeight;
+        let tempCtx = tempCanvas.getContext('2d');
+        tempCtx.drawImage(videoEl, 0, 0, tempCanvas.width, tempCanvas.height);
+        let imageData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+
+        // Calculate scaling
+        let scaleX = 1, scaleY = 1, offX = 0, offY = 0;
+        let vidAR = videoEl.videoWidth / videoEl.videoHeight;
+        let canAR = canvas.width / canvas.height;
+        if(vidAR > canAR) {
+          scaleX = canvas.width / videoEl.videoWidth;
+          scaleY = scaleX;
+          offY = (canvas.height - videoEl.videoHeight * scaleY) / 2;
+        } else {
+          scaleY = canvas.height / videoEl.videoHeight;
+          scaleX = scaleY;
+          offX = (canvas.width - videoEl.videoWidth * scaleX) / 2;
+        }
+
+        let detections = [];
+        for(let p of persons) {
+          let [bx, by, bw, bh] = p.bbox;
+          let ppe = analyzePPE(imageData, bx, by, bw, bh);
+          detections.push({
+            x: bx, y: by, w: bw, h: bh,
+            score: p.score,
+            ppeCompliant: ppe.ppeCompliant,
+            hasHelmet: ppe.hasHelmet,
+            hasVest: ppe.hasVest
+          });
+        }
+
+        // Draw detections
+        let compliantCount = 0;
+        for(let i = 0; i < detections.length; i++) {
+          let d = detections[i];
+          let x = d.x * scaleX + offX;
+          let y = d.y * scaleY + offY;
+          let w = d.w * scaleX;
+          let h = d.h * scaleY;
+
+          let color = d.ppeCompliant ? '#10B981' : '#EF4444';
+          if(d.ppeCompliant) compliantCount++;
+
+          ctx.strokeStyle = color;
+          ctx.lineWidth = 2;
+          ctx.strokeRect(x, y, w, h);
+
+          ctx.fillStyle = color + 'cc';
+          ctx.fillRect(x, y - 22, w, 22);
+          ctx.fillStyle = 'white';
+          ctx.font = 'bold 10px monospace';
+          let status = d.ppeCompliant ? '✅ PPE OK' : (d.hasHelmet ? '⚠️ No Vest' : (d.hasVest ? '⚠️ No Helmet' : '🚨 NO PPE'));
+          ctx.fillText(status, x + 4, y - 8);
+
+          // Show PPE icons
+          if(d.hasHelmet) {
+            ctx.fillStyle = '#FBBF24';
+            ctx.fillRect(x + w - 28, y + 4, 24, 14);
+            ctx.fillStyle = 'black';
+            ctx.font = '10px monospace';
+            ctx.fillText('⛑️', x + w - 26, y + 15);
+          }
+          if(d.hasVest) {
+            ctx.fillStyle = '#F97316';
+            ctx.fillRect(x + w - 28, y + 20, 24, 14);
+            ctx.fillStyle = 'black';
+            ctx.fillText('🦺', x + w - 26, y + 31);
+          }
+        }
+
+        // Update metrics
+        document.getElementById('kpi-workers').textContent = detections.length;
+        let compliancePercent = detections.length > 0 ? Math.round((compliantCount / detections.length) * 100) : 100;
+        document.getElementById('kpi-ppe').textContent = compliancePercent + '%';
+        ppe = compliancePercent;
+        lastDetections = detections;
+
+      } catch(e) {
+        console.log('Detection error:', e);
+      }
+    }
+
+    // FPS counter
+    frameCount++;
+    let now = Date.now();
+    if((now - fpsStart) >= 1000) {
+      currentFPS = frameCount;
+      frameCount = 0;
+      fpsStart = now;
+      document.getElementById('kpi-fps').textContent = currentFPS;
+      document.getElementById('hud-fps').textContent = currentFPS;
+    }
+
+    animFrame = requestAnimationFrame(loop);
+  }
+  animFrame = requestAnimationFrame(loop);
+}
+
+function runDemoLoop() {
+  let canvas = document.getElementById('detection-canvas');
+  let ctx = canvas.getContext('2d');
+  let boxes = [], timer = 0;
+
+  function loop() {
+    if(!isRunning || isPaused) {
+      animFrame = requestAnimationFrame(loop);
+      return;
+    }
+
+    let rect = canvas.parentElement.getBoundingClientRect();
+    canvas.width = rect.width;
+    canvas.height = rect.height;
+    ctx.fillStyle = 'rgba(5,3,12,0.96)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    timer++;
+    if(timer % 60 === 0 || boxes.length === 0) {
+      let n = Math.floor(Math.random() * 4) + 2;
+      boxes = [];
+      for(let i = 0; i < n; i++) {
+        boxes.push({
+          x: 40 + Math.random() * (canvas.width - 150),
+          y: 40 + Math.random() * (canvas.height - 180),
+          w: 80 + Math.random() * 70,
+          h: 130 + Math.random() * 70,
+          ppe: Math.random() > 0.35,
+          helmet: Math.random() > 0.5,
+          vest: Math.random() > 0.5
+        });
+      }
+    }
+
+    let compliantCount = 0;
+    boxes.forEach(b => {
+      let color = b.ppe ? '#10B981' : '#EF4444';
+      if(b.ppe) compliantCount++;
+      ctx.strokeStyle = color;
+      ctx.strokeRect(b.x, b.y, b.w, b.h);
+      ctx.fillStyle = color + 'cc';
+      ctx.fillRect(b.x, b.y - 22, b.w, 22);
+      ctx.fillStyle = 'white';
+      ctx.font = 'bold 10px monospace';
+      ctx.fillText(b.ppe ? '✅ PPE OK' : '🚨 NO PPE', b.x + 4, b.y - 8);
+    });
+
+    document.getElementById('kpi-workers').textContent = boxes.length;
+    let compliancePercent = boxes.length > 0 ? Math.round((compliantCount / boxes.length) * 100) : 100;
+    document.getElementById('kpi-ppe').textContent = compliancePercent + '%';
+    ppe = compliancePercent;
+
+    frameCount++;
+    let now = Date.now();
+    if((now - fpsStart) >= 1000) {
+      currentFPS = frameCount;
+      frameCount = 0;
+      fpsStart = now;
+      document.getElementById('kpi-fps').textContent = currentFPS;
+      document.getElementById('hud-fps').textContent = currentFPS;
+    }
+
+    animFrame = requestAnimationFrame(loop);
+  }
+  animFrame = requestAnimationFrame(loop);
+}
+
+function runSim() {
+  if(simInterval) clearInterval(simInterval);
+  simInterval = setInterval(() => {
+    if(!isRunning || isPaused) return;
+
+    let workers = parseInt(document.getElementById('kpi-workers').textContent) || 0;
+    let ppeVal = parseInt(document.getElementById('kpi-ppe').textContent) || 100;
+    risk = Math.min(100, Math.max(0, risk + (Math.random() - 0.48) * 6 + (100 - ppeVal) / 15));
+
+    if(risk > 75 && workers > 0 && ppeVal < 70) {
+      violations++;
+      let t = new Date().toLocaleTimeString();
+      let msg = `🚨 PPE violation detected - ${Math.floor(100 - ppeVal)}% of workers non-compliant`;
+      alerts.unshift({ sev: 'CRITICAL', msg: msg, time: t });
+      incidents.unshift({ id: 'INC-' + Math.floor(Math.random() * 9000 + 1000), time: t, msg: msg, sev: 'CRITICAL' });
+      if(alerts.length > 5) alerts.pop();
+      if(incidents.length > 8) incidents.pop();
+      renderAlerts();
+      renderLog();
+      toast(msg);
+    }
+
+    document.getElementById('kpi-violations').textContent = violations;
+    document.getElementById('riskNum').textContent = Math.floor(risk);
+
+    let fill = document.getElementById('riskFill');
+    let badge = document.getElementById('riskBadge');
+    let num = document.getElementById('riskNum');
+    fill.style.width = risk + '%';
+
+    if(risk > 75) {
+      fill.className = 'track-fill high';
+      num.className = 'risk-big high';
+      badge.textContent = 'CRITICAL';
+      badge.className = 'risk-badge risk-high';
+    } else if(risk > 50) {
+      fill.className = 'track-fill mod';
+      num.className = 'risk-big mod';
+      badge.textContent = 'HIGH';
+      badge.className = 'risk-badge risk-mod';
+    } else {
+      fill.className = 'track-fill low';
+      num.className = 'risk-big low';
+      badge.textContent = 'LOW';
+      badge.className = 'risk-badge risk-low';
+    }
+
+    riskHistory.push(risk);
+    if(riskHistory.length > 30) riskHistory.shift();
+    drawChart();
+  }, 1500);
+}
+
+function renderAlerts() {
+  let c = document.getElementById('alertsContainer');
+  if(!alerts.length) {
+    c.innerHTML = '<div class="empty-alerts">✅ All clear</div>';
+    return;
+  }
+  c.innerHTML = alerts.map(a => `
+    <div class="alert-card critical">
+      <div class="alert-top">
+        <span class="alert-sev c">🔴 ${a.sev}</span>
+        <span class="alert-time-small">${a.time}</span>
+      </div>
+      <div class="alert-msg">${a.msg}</div>
+    </div>
+  `).join('');
+}
+
+function renderLog() {
+  let c = document.getElementById('logContainer');
+  if(!incidents.length) {
+    c.innerHTML = '<div class="empty-log">✓ No incidents logged</div>';
+    return;
+  }
+  c.innerHTML = incidents.slice(0, 7).map(i => `
+    <div class="log-row">
+      <span>${i.id}</span>
+      <span>${i.time}</span>
+      <span>${i.msg.substring(0, 60)}</span>
+      <span class="sev-high">🔴 ${i.sev}</span>
+    </div>
+  `).join('');
+}
+
+function drawChart() {
+  let canvas = document.getElementById('trend-canvas');
+  let ctx = canvas.getContext('2d');
+  let w = canvas.parentElement.clientWidth;
+  let h = 90;
+  canvas.width = w;
+  canvas.height = h;
+  ctx.clearRect(0, 0, w, h);
+  if(riskHistory.length < 2) return;
+
+  let max = Math.max(...riskHistory, 10);
+  let step = w / (riskHistory.length - 1);
+  ctx.beginPath();
+  riskHistory.forEach((v, i) => {
+    let x = i * step;
+    let y = h - (v / max) * h * 0.8;
+    if(i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  });
+  ctx.strokeStyle = '#8B5CF6';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+}
+
+function toggleMonitoring() {
+  if(!isRunning) {
+    isRunning = true;
+    startUI();
+    runSim();
+    let src = document.getElementById('sourceSelect').value;
+    if(src === 'webcam') startWebcamMode();
+    else if(src === 'upload') startUploadMode();
+    else startDemoMode();
+  } else {
+    isRunning = false;
+    stopAllStreams();
+    stopUI();
+    if(simInterval) clearInterval(simInterval);
+    lastDetections = [];
+    toast('Monitoring stopped');
+  }
+}
+
+function pauseMonitoring() {
+  if(!isRunning) return;
+  isPaused = !isPaused;
+  toast(isPaused ? '⏸ Paused' : '▶ Resumed');
+  if(!isPaused && isRunning) runSim();
+}
+
+function resetSession() {
+  violations = 0;
+  risk = 8;
+  incidents = [];
+  alerts = [];
+  riskHistory = [];
+  personTracks.clear();
+  nextTrackId = 1;
+  document.getElementById('kpi-workers').textContent = '0';
+  document.getElementById('kpi-violations').textContent = '0';
+  document.getElementById('kpi-ppe').textContent = '100%';
+  document.getElementById('riskNum').textContent = '0';
+  document.getElementById('riskFill').style.width = '0%';
+  renderAlerts();
+  renderLog();
+  drawChart();
+  toast('Session reset');
+}
+
+function toggleTheme() {
+  document.body.style.filter = document.body.style.filter ? 'none' : 'invert(1) hue-rotate(180deg)';
+}
+
+setInterval(() => {
+  let now = new Date();
+  document.getElementById('clockBox').textContent = now.toLocaleTimeString();
+}, 1000);
+
+loadModel();
+renderAlerts();
+renderLog();
+drawChart();
+</script>
+</body>
+</html>

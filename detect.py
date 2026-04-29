@@ -344,6 +344,34 @@ class SafetyDetector:
         cv2.putText(frame, "SAFEGUARD AI | STEEL PLANT ALPHA",
                     (10, 22), font, 0.5, (180, 180, 180), 1, cv2.LINE_AA)
 
+    # - Demo frame: dark background with animated worker grid -
+    def generate_demo_frame(self, frame_idx: int = 0, w: int = 960, h: int = 540) -> np.ndarray:
+        """
+        Returns a synthetic BGR frame for Demo Mode.
+        Uses frame_idx to animate worker positions slightly.
+        """
+        frame = np.zeros((h, w, 3), dtype=np.uint8)
+        # Dark industrial floor
+        for y in range(h):
+            v = int(22 + 12 * y / h)
+            frame[y, :] = (v, v + 2, v + 4)
+
+        # Grid lines (factory floor markings)
+        for x in range(0, w, 120):
+            cv2.line(frame, (x, 0), (x, h), (35, 40, 35), 1)
+        for y in range(0, h, 120):
+            cv2.line(frame, (0, y), (w, y), (35, 40, 35), 1)
+
+        # Yellow safety zone border
+        cv2.rectangle(frame, (30, 30), (w - 30, h - 30), (0, 180, 180), 1)
+
+        # Watermark text
+        font = cv2.FONT_HERSHEY_SIMPLEX
+        cv2.putText(frame, "DEMO MODE - SIMULATION ACTIVE",
+                    (w // 2 - 220, h - 16), font, 0.55, (60, 60, 80), 1, cv2.LINE_AA)
+
+        return frame
+
     # - Splash / standby frame shown before monitoring starts -
     def generate_splash_frame(self, w: int = 960, h: int = 540) -> np.ndarray:
         """

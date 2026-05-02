@@ -16,6 +16,7 @@ from pathlib import Path
 import hashlib
 from PIL import Image
 import io
+from ultralytics import YOLO
 
 # ============================================================================
 # PAGE CONFIGURATION
@@ -768,27 +769,47 @@ def render_upload_section():
 # MOCK DETECTION CLASSES (for demo)
 # ============================================================================
 
+# Add at the top with other imports:
+from ultralytics import YOLO
+
+# Replace the entire SafetyDetector class with:
+# Add this import at the top (around line 10):
+from ultralytics import YOLO
+
+# Then REPLACE the entire SafetyDetector class (around line 440-465) with:
 class SafetyDetector:
     def __init__(self):
-        self.classes = ['person', 'helmet', 'vest', 'gloves', 'mobile_phone', 'smoking']
+        # Load pre-trained COCO model (no training file needed!)
+        self.model = YOLO('yolov8n.pt')  # Auto-downloads first time
 
     def detect(self, frame, conf=0.5):
-        import random
-        results = []
-        h, w = frame.shape[:2]
-        num_detections = random.randint(0, 8)
-        for i in range(num_detections):
-            x = random.randint(0, w-100)
-            y = random.randint(0, h-100)
-            cls = random.choice(self.classes)
-            results.append(type('Detection', (), {
-                'bbox': [x, y, x+80, y+120],
-                'cls': cls,
-                'confidence': random.uniform(0.5, 0.95)
-            })())
-        return results
+        # Run real detection
+        results = self.model(frame, conf=conf)[0]
 
-    def annotate(self, frame, results, show_boxes=True, show_labels=True, show_scores=True):
+        # Convert YOLO results to your existing detection format
+        detections = []
+        for box in results.boxes:
+            x1, y1, x2, y2 = map(int, box.xyxy[0].tolist())
+            cls_id = int(box.cls[0])
+            confidence = float(box.conf[0])
+
+            # Map COCO classes to your safety categories
+            if cls_id == 0:  # person in COCO
+                class_name = 'person'
+            elif cls_id == 67:  # cell phone in COCO
+                class_name = 'mobile_phone'
+            else:
+                continue  # Skip other objects for now
+
+            detections.append(type('Detection', (), {
+                'bbox': [x1, y1, x2, y2],
+                'cls': class_name,
+                'confidence': confidence
+            })())
+        return detections
+
+    def annotate(self, frame, results, show_boxes=True, show_labels=True, show_scores=False):
+        # Keep your existing annotate method - it works fine!
         annotated = frame.copy()
         for det in results:
             x1, y1, x2, y2 = det.bbox
@@ -804,6 +825,7 @@ class SafetyDetector:
         return annotated
 
     def generate_splash_frame(self):
+        # Keep your existing splash frame
         frame = np.zeros((720, 1280, 3), dtype=np.uint8)
         cv2.putText(frame, "SafeGuard AI", (400, 360),
                    cv2.FONT_HERSHEY_SIMPLEX, 3, (0, 255, 136), 3)

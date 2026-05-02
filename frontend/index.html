@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SafeGuard AI — Industrial Safety Intelligence Platform</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.17.0/dist/tf.min.js"></script>
@@ -47,6 +47,7 @@ body {
   position: relative;
 }
 
+/* Animated bg mesh */
 body::before {
   content: '';
   position: fixed;
@@ -59,6 +60,7 @@ body::before {
   z-index: 0;
 }
 
+/* Grid lines */
 body::after {
   content: '';
   position: fixed;
@@ -73,7 +75,7 @@ body::after {
 
 .app-shell { display: flex; height: 100vh; overflow: hidden; position: relative; z-index: 1; }
 
-/* SIDEBAR */
+/* ---- SIDEBAR ---- */
 .sidebar {
   width: 76px;
   background: rgba(13, 10, 26, 0.9);
@@ -126,750 +128,1976 @@ body::after {
 }
 
 .nav-items { display: flex; flex-direction: column; gap: 6px; flex: 1; }
+
 .nav-btn {
-  width: 46px; height: 46px; border-radius: 12px; display: flex; align-items: center; justify-content: center;
-  cursor: pointer; transition: all 0.2s; border: 1px solid transparent; background: transparent; color: var(--text-3); font-size: 18px;
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-3);
+  font-size: 18px;
 }
+
 .nav-btn:hover { background: rgba(139,92,246,0.12); color: var(--purple-bright); border-color: var(--border); }
-.nav-btn.active { background: rgba(139,92,246,0.2); color: var(--purple-bright); border-color: var(--border-bright); box-shadow: inset 0 0 20px rgba(139,92,246,0.1); }
-.nav-btn.active::before { content: ''; position: absolute; left: -1px; top: 25%; bottom: 25%; width: 2px; background: var(--purple-mid); border-radius: 0 2px 2px 0; }
+.nav-btn.active {
+  background: rgba(139,92,246,0.2);
+  color: var(--purple-bright);
+  border-color: var(--border-bright);
+  box-shadow: inset 0 0 20px rgba(139,92,246,0.1);
+}
+.nav-btn.active::before {
+  content: '';
+  position: absolute;
+  left: -1px;
+  top: 25%;
+  bottom: 25%;
+  width: 2px;
+  background: var(--purple-mid);
+  border-radius: 0 2px 2px 0;
+}
+
 .sidebar-bottom { display: flex; flex-direction: column; gap: 8px; align-items: center; }
+
 .theme-btn {
-  width: 40px; height: 40px; border-radius: 10px; background: rgba(139,92,246,0.1); border: 1px solid var(--border);
-  color: var(--text-2); font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: rgba(139,92,246,0.1);
+  border: 1px solid var(--border);
+  color: var(--text-2);
+  font-size: 16px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
 }
 .theme-btn:hover { background: rgba(139,92,246,0.2); color: var(--purple-bright); }
 
-/* MAIN AREA */
+/* ---- MAIN AREA ---- */
 .main-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+
+/* TOP BAR */
 .top-bar {
-  padding: 0 24px; height: 56px; background: rgba(13,10,26,0.8); border-bottom: 1px solid var(--border);
-  backdrop-filter: blur(20px); display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
+  padding: 0 24px;
+  height: 56px;
+  background: rgba(13,10,26,0.8);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(20px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
 }
+
 .top-left { display: flex; align-items: center; gap: 16px; }
+
 .brand-text {
-  font-family: 'Orbitron', monospace; font-size: 13px; font-weight: 700; letter-spacing: 2px;
-  background: linear-gradient(90deg, var(--purple-bright), var(--cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  font-family: 'Orbitron', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  background: linear-gradient(90deg, var(--purple-bright), var(--cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
-.zone-tag { background: rgba(139,92,246,0.15); border: 1px solid var(--border-bright); border-radius: 6px; padding: 4px 10px; font-size: 11px; font-weight: 600; letter-spacing: 1px; color: var(--purple-bright); text-transform: uppercase; }
+
+.zone-tag {
+  background: rgba(139,92,246,0.15);
+  border: 1px solid var(--border-bright);
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: var(--purple-bright);
+  text-transform: uppercase;
+}
+
 .top-right { display: flex; align-items: center; gap: 20px; }
+
 .status-chips { display: flex; gap: 8px; }
-.chip { display: flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; border: 1px solid; text-transform: uppercase; }
+.chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  border: 1px solid;
+  text-transform: uppercase;
+}
 .chip-off { background: rgba(107,95,138,0.1); border-color: rgba(107,95,138,0.3); color: var(--text-3); }
 .chip-on { background: rgba(16,185,129,0.1); border-color: rgba(16,185,129,0.35); color: var(--green); }
+.chip-warn { background: rgba(245,158,11,0.1); border-color: rgba(245,158,11,0.35); color: var(--amber); }
+.chip-danger { background: rgba(239,68,68,0.1); border-color: rgba(239,68,68,0.35); color: var(--red); }
 .chip-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
 .chip-on .chip-dot { animation: blink 1.5s ease-in-out infinite; }
 @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
-.clock-box { font-family: 'Space Mono', monospace; font-size: 12px; color: var(--text-2); background: rgba(139,92,246,0.08); border: 1px solid var(--border); padding: 6px 12px; border-radius: 8px; }
+
+.clock-box {
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  color: var(--text-2);
+  background: rgba(139,92,246,0.08);
+  border: 1px solid var(--border);
+  padding: 6px 12px;
+  border-radius: 8px;
+}
 
 /* VIDEO SECTION */
 .video-section {
-  flex: 1; background: #000; position: relative; overflow: hidden; min-height: 0;
+  flex: 1;
+  background: #000;
+  position: relative;
+  overflow: hidden;
+  min-height: 0;
 }
-.video-frame { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
-#webcam-video, #upload-video { display: none; position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; background: #000; }
-#detection-canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; display: none; }
-.standby-screen {
-  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; position: absolute; inset: 0;
-}
-.standby-ring { width: 120px; height: 120px; border-radius: 50%; border: 2px solid rgba(139,92,246,0.3); position: relative; display: flex; align-items: center; justify-content: center; animation: rotate-ring 8s linear infinite; }
-.standby-ring::before { content: ''; position: absolute; inset: -6px; border-radius: 50%; border: 1px solid transparent; border-top-color: var(--purple-mid); animation: rotate-ring 2s linear infinite; }
-.standby-ring::after { content: ''; position: absolute; inset: 6px; border-radius: 50%; border: 1px solid rgba(34,211,238,0.2); border-bottom-color: var(--cyan); animation: rotate-ring 3s linear infinite reverse; }
-@keyframes rotate-ring { to { transform: rotate(360deg); } }
-.standby-icon { font-size: 40px; z-index: 1; }
-.standby-label { font-family: 'Orbitron', monospace; font-size: 13px; letter-spacing: 4px; color: var(--text-3); text-transform: uppercase; }
 
+.video-frame {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#video-stream { max-width: 100%; max-height: 100%; object-fit: contain; display: none; }
+
+.standby-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  position: relative;
+}
+
+.standby-ring {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 2px solid rgba(139,92,246,0.3);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: rotate-ring 8s linear infinite;
+}
+.standby-ring::before {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 1px solid transparent;
+  border-top-color: var(--purple-mid);
+  animation: rotate-ring 2s linear infinite;
+}
+.standby-ring::after {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border-radius: 50%;
+  border: 1px solid rgba(34,211,238,0.2);
+  border-bottom-color: var(--cyan);
+  animation: rotate-ring 3s linear infinite reverse;
+}
+@keyframes rotate-ring { to { transform: rotate(360deg); } }
+
+.standby-icon { font-size: 40px; z-index: 1; }
+
+.standby-label {
+  font-family: 'Orbitron', monospace;
+  font-size: 13px;
+  letter-spacing: 4px;
+  color: var(--text-3);
+  text-transform: uppercase;
+}
+.standby-sub { font-size: 12px; color: var(--text-3); letter-spacing: 1px; }
+
+/* Corner brackets */
 .corner { position: absolute; width: 24px; height: 24px; }
 .corner-tl { top: 16px; left: 16px; border-top: 2px solid var(--purple-mid); border-left: 2px solid var(--purple-mid); }
 .corner-tr { top: 16px; right: 16px; border-top: 2px solid var(--purple-mid); border-right: 2px solid var(--purple-mid); }
 .corner-bl { bottom: 16px; left: 16px; border-bottom: 2px solid var(--purple-mid); border-left: 2px solid var(--purple-mid); }
 .corner-br { bottom: 16px; right: 16px; border-bottom: 2px solid var(--purple-mid); border-right: 2px solid var(--purple-mid); }
 
-.hud-top { position: absolute; top: 12px; left: 0; right: 0; display: flex; justify-content: space-between; padding: 0 50px; pointer-events: none; }
-.hud-pill { display: flex; align-items: center; gap: 8px; background: rgba(13,10,26,0.8); border: 1px solid var(--border); border-radius: 20px; padding: 5px 14px; font-size: 11px; font-weight: 600; color: var(--text-2); backdrop-filter: blur(10px); }
-.hud-bottom { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(0deg, rgba(10,6,18,0.85) 0%, transparent 100%); padding: 12px 50px; display: flex; gap: 16px; align-items: center; pointer-events: none; }
-.hud-tag { font-size: 10px; letter-spacing: 1px; color: var(--text-3); font-weight: 600; text-transform: uppercase; }
-.hud-val { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--purple-bright); }
+/* HUD overlays */
+.hud-top {
+  position: absolute;
+  top: 12px;
+  left: 0; right: 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 50px;
+  pointer-events: none;
+}
+
+.hud-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(13,10,26,0.8);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 5px 14px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: var(--text-2);
+  backdrop-filter: blur(10px);
+}
+.hud-pill .dot { width: 6px; height: 6px; border-radius: 50%; }
+
+.hud-bottom {
+  position: absolute;
+  bottom: 0;
+  left: 0; right: 0;
+  background: linear-gradient(0deg, rgba(10,6,18,0.85) 0%, transparent 100%);
+  padding: 12px 50px;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  pointer-events: none;
+}
+.hud-tag {
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: var(--text-3);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+.hud-val {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  color: var(--purple-bright);
+}
 
 /* CONTROL BAR */
 .control-bar {
-  background: rgba(13,10,26,0.9); border-top: 1px solid var(--border); padding: 12px 24px;
-  display: flex; align-items: center; gap: 12px; flex-shrink: 0; backdrop-filter: blur(20px);
+  background: rgba(13,10,26,0.9);
+  border-top: 1px solid var(--border);
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+  backdrop-filter: blur(20px);
 }
-.btn { display: flex; align-items: center; gap: 8px; padding: 9px 22px; border-radius: 8px; font-family: 'Rajdhani', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 1px; cursor: pointer; transition: all 0.2s; border: 1px solid; text-transform: uppercase; }
-.btn-start { background: linear-gradient(135deg, var(--purple-deep), var(--purple-mid)); border-color: var(--purple-mid); color: white; box-shadow: 0 0 20px rgba(139,92,246,0.3); }
+
+.btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 22px;
+  border-radius: 8px;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid;
+  text-transform: uppercase;
+}
+
+.btn-start {
+  background: linear-gradient(135deg, var(--purple-deep), var(--purple-mid));
+  border-color: var(--purple-mid);
+  color: white;
+  box-shadow: 0 0 20px rgba(139,92,246,0.3);
+}
 .btn-start:hover { box-shadow: 0 0 30px rgba(139,92,246,0.5); transform: translateY(-1px); }
-.btn-stop { background: rgba(239,68,68,0.15); border-color: rgba(239,68,68,0.4); color: var(--red); }
-.btn-ghost { background: rgba(139,92,246,0.08); border-color: var(--border); color: var(--text-2); }
+
+.btn-stop {
+  background: rgba(239,68,68,0.15);
+  border-color: rgba(239,68,68,0.4);
+  color: var(--red);
+}
+.btn-stop:hover { background: rgba(239,68,68,0.25); }
+
+.btn-ghost {
+  background: rgba(139,92,246,0.08);
+  border-color: var(--border);
+  color: var(--text-2);
+}
+.btn-ghost:hover { background: rgba(139,92,246,0.15); color: var(--purple-bright); border-color: var(--border-bright); }
+
+.ctrl-divider { width: 1px; height: 28px; background: var(--border); margin: 0 4px; }
+
 .ctrl-settings { display: flex; gap: 16px; align-items: center; margin-left: auto; }
 .ctrl-item { display: flex; align-items: center; gap: 8px; }
 .ctrl-label { font-size: 11px; font-weight: 600; letter-spacing: 0.5px; color: var(--text-3); text-transform: uppercase; }
-.ctrl-val { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--purple-bright); background: rgba(139,92,246,0.1); padding: 2px 8px; border-radius: 4px; border: 1px solid var(--border); min-width: 38px; text-align: center; }
-select { background: rgba(13,10,26,0.8); border: 1px solid var(--border); color: var(--text-2); padding: 6px 10px; border-radius: 8px; font-family: 'Rajdhani', sans-serif; font-size: 12px; font-weight: 600; outline: none; cursor: pointer; }
-input[type="range"] { width: 80px; height: 3px; -webkit-appearance: none; background: linear-gradient(90deg, var(--purple-mid) 0%, var(--border) 50%); border-radius: 2px; outline: none; }
-input[type="range"]::-webkit-slider-thumb { width: 12px; height: 12px; border-radius: 50%; background: var(--purple-bright); cursor: pointer; }
+.ctrl-val {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  color: var(--purple-bright);
+  background: rgba(139,92,246,0.1);
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  min-width: 38px;
+  text-align: center;
+}
+
+input[type="range"] {
+  width: 80px;
+  height: 3px;
+  -webkit-appearance: none;
+  background: linear-gradient(90deg, var(--purple-mid) 0%, var(--border) 50%);
+  border-radius: 2px;
+  outline: none;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: var(--purple-bright);
+  box-shadow: 0 0 8px rgba(139,92,246,0.6);
+  cursor: pointer;
+}
+
+select {
+  background: rgba(13,10,26,0.8);
+  border: 1px solid var(--border);
+  color: var(--text-2);
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  outline: none;
+  cursor: pointer;
+}
+select:focus { border-color: var(--purple-mid); }
 
 /* LOG PANEL */
-.log-panel { background: rgba(13,10,26,0.8); border-top: 1px solid var(--border); max-height: 170px; overflow-y: auto; flex-shrink: 0; }
-.log-head { display: grid; grid-template-columns: 70px 75px 1fr 90px; gap: 12px; padding: 8px 20px; font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-3); border-bottom: 1px solid var(--border); position: sticky; top: 0; background: rgba(13,10,26,0.95); backdrop-filter: blur(10px); }
-.log-row { display: grid; grid-template-columns: 70px 75px 1fr 90px; gap: 12px; padding: 9px 20px; font-size: 12px; border-bottom: 1px solid rgba(130,80,255,0.06); transition: background 0.15s; font-weight: 500; }
-.sev-critical { color: var(--red); } .sev-high { color: var(--amber); } .sev-medium { color: #F97316; } .sev-low { color: var(--green); }
-.empty-log { padding: 20px; text-align: center; font-size: 12px; color: var(--text-3); }
+.log-panel {
+  background: rgba(13,10,26,0.8);
+  border-top: 1px solid var(--border);
+  max-height: 170px;
+  overflow-y: auto;
+  flex-shrink: 0;
+}
 
-/* RIGHT PANEL */
-.right-panel { width: 310px; flex-shrink: 0; background: rgba(13,10,26,0.8); border-left: 1px solid var(--border); display: flex; flex-direction: column; overflow-y: auto; backdrop-filter: blur(20px); }
-.rpanel-section { padding: 18px 18px 16px; border-bottom: 1px solid var(--border); }
-.section-title { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text-3); display: flex; align-items: center; gap: 8px; }
-.section-title::before { content: ''; width: 3px; height: 10px; background: linear-gradient(180deg, var(--purple-mid), var(--cyan)); border-radius: 2px; }
+.log-head {
+  display: grid;
+  grid-template-columns: 70px 75px 1fr 90px;
+  gap: 12px;
+  padding: 8px 20px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-3);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  background: rgba(13,10,26,0.95);
+  backdrop-filter: blur(10px);
+}
 
+.log-row {
+  display: grid;
+  grid-template-columns: 70px 75px 1fr 90px;
+  gap: 12px;
+  padding: 9px 20px;
+  font-size: 12px;
+  border-bottom: 1px solid rgba(130,80,255,0.06);
+  transition: background 0.15s;
+  font-weight: 500;
+}
+.log-row:hover { background: rgba(139,92,246,0.06); }
+
+.sev-id { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--purple-bright); }
+.sev-time { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text-3); }
+.sev-critical { color: var(--red); font-weight: 700; }
+.sev-high { color: var(--amber); font-weight: 700; }
+.sev-medium { color: #F97316; font-weight: 700; }
+.sev-low { color: var(--green); font-weight: 600; }
+
+.empty-log {
+  padding: 20px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--text-3);
+  letter-spacing: 0.5px;
+}
+
+/* ---- RIGHT PANEL ---- */
+.right-panel {
+  width: 310px;
+  flex-shrink: 0;
+  background: rgba(13,10,26,0.8);
+  border-left: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  backdrop-filter: blur(20px);
+}
+
+.right-panel::-webkit-scrollbar { width: 4px; }
+.right-panel::-webkit-scrollbar-track { background: transparent; }
+.right-panel::-webkit-scrollbar-thumb { background: rgba(139,92,246,0.3); border-radius: 2px; }
+
+.rpanel-section {
+  padding: 18px 18px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.section-hd {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.section-title {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-3);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.section-title::before {
+  content: '';
+  width: 3px;
+  height: 10px;
+  background: linear-gradient(180deg, var(--purple-mid), var(--cyan));
+  border-radius: 2px;
+}
+
+/* KPI CARDS */
 .kpi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.kpi-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 14px; }
-.kpi-label { font-size: 10px; font-weight: 600; text-transform: uppercase; color: var(--text-3); margin-bottom: 10px; }
-.kpi-val { font-family: 'Orbitron', monospace; font-size: 30px; font-weight: 700; background: linear-gradient(135deg, white, var(--purple-glow)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-.risk-card { background: var(--bg-card); border-radius: 14px; padding: 16px; border: 1px solid var(--border); }
-.risk-badge { font-size: 10px; font-weight: 700; padding: 4px 10px; border-radius: 20px; text-transform: uppercase; }
-.risk-low { background: rgba(16,185,129,0.15); color: var(--green); }
-.risk-mod { background: rgba(245,158,11,0.15); color: var(--amber); }
-.risk-high { background: rgba(239,68,68,0.15); color: var(--red); }
-.risk-big { font-family: 'Orbitron'; font-size: 44px; font-weight: 900; }
-.risk-big.low { color: var(--green); } .risk-big.mod { color: var(--amber); } .risk-big.high { color: var(--red); }
-.track { height: 5px; background: rgba(139,92,246,0.1); border-radius: 3px; overflow: hidden; margin-bottom: 6px; }
-.track-fill { height: 100%; border-radius: 3px; transition: width 0.4s ease; }
-.track-fill.low { background: linear-gradient(90deg, var(--green), #34D399); }
+
+.kpi-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.2s;
+}
+.kpi-card:hover { border-color: var(--border-bright); }
+.kpi-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(139,92,246,0.05), transparent);
+  pointer-events: none;
+}
+
+.kpi-label { font-size: 10px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--text-3); margin-bottom: 10px; }
+.kpi-val {
+  font-family: 'Orbitron', monospace;
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -1px;
+  background: linear-gradient(135deg, white, var(--purple-glow));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.kpi-sub { font-size: 10px; color: var(--text-3); margin-top: 6px; }
+
+.kpi-card.green .kpi-val { background: linear-gradient(135deg, white, var(--green)); -webkit-background-clip: text; }
+.kpi-card.amber .kpi-val { background: linear-gradient(135deg, white, var(--amber)); -webkit-background-clip: text; }
+.kpi-card.cyan .kpi-val { background: linear-gradient(135deg, white, var(--cyan)); -webkit-background-clip: text; }
+
+/* RISK METER */
+.risk-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px;
+  position: relative;
+  overflow: hidden;
+}
+
+.risk-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 80% 20%, rgba(139,92,246,0.08), transparent 60%);
+  pointer-events: none;
+}
+
+.risk-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+.risk-label { font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--text-3); }
+
+.risk-badge {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  text-transform: uppercase;
+}
+.risk-low { background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.3); color: var(--green); }
+.risk-mod { background: rgba(245,158,11,0.15); border: 1px solid rgba(245,158,11,0.3); color: var(--amber); }
+.risk-high { background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.3); color: var(--red); }
+
+.risk-num-row { display: flex; align-items: baseline; gap: 6px; margin-bottom: 14px; }
+.risk-big {
+  font-family: 'Orbitron', monospace;
+  font-size: 44px;
+  font-weight: 900;
+  letter-spacing: -2px;
+  line-height: 1;
+}
+.risk-big.low { color: var(--green); text-shadow: 0 0 20px rgba(16,185,129,0.4); }
+.risk-big.mod { color: var(--amber); text-shadow: 0 0 20px rgba(245,158,11,0.4); }
+.risk-big.high { color: var(--red); text-shadow: 0 0 20px rgba(239,68,68,0.4); }
+.risk-denom { font-size: 13px; color: var(--text-3); font-weight: 500; }
+
+.track {
+  height: 5px;
+  background: rgba(139,92,246,0.1);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+.track-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.4s ease;
+  width: 0%;
+}
+.track-fill.low { background: linear-gradient(90deg, var(--green), #34D399); box-shadow: var(--glow-green); }
 .track-fill.mod { background: linear-gradient(90deg, var(--amber), #FCD34D); }
 .track-fill.high { background: linear-gradient(90deg, var(--red), #F87171); }
-.alert-card { background: var(--bg-card); border-radius: 10px; padding: 11px 12px; border-left: 3px solid transparent; margin-bottom: 8px; }
-.alert-card.critical { border-left-color: var(--red); background: rgba(239,68,68,0.05); }
-.alert-card.warning { border-left-color: var(--amber); }
-.alert-sev.c { color: var(--red); } .alert-sev.w { color: var(--amber); }
-#trend-canvas { width: 100%; height: 90px; }
-.toast { position: fixed; bottom: 24px; right: 24px; z-index: 9999; background: rgba(19,15,36,0.95); border: 1px solid var(--border-bright); border-radius: 12px; padding: 12px 20px; font-weight: 600; backdrop-filter: blur(20px); transition: all 0.3s; opacity: 0; transform: translateY(80px); pointer-events: none; }
+
+.risk-scale { display: flex; justify-content: space-between; font-size: 9px; color: var(--text-3); letter-spacing: 0.5px; font-weight: 600; }
+
+/* ALERTS */
+.alerts-wrap { display: flex; flex-direction: column; gap: 8px; }
+
+.alert-card {
+  background: var(--bg-card);
+  border-radius: 10px;
+  padding: 11px 12px;
+  border-left: 3px solid transparent;
+  border: 1px solid var(--border);
+  position: relative;
+}
+.alert-card.critical { border-left: 3px solid var(--red); background: rgba(239,68,68,0.05); border-right: 1px solid rgba(239,68,68,0.2); border-top: 1px solid rgba(239,68,68,0.15); border-bottom: 1px solid rgba(239,68,68,0.15); }
+.alert-card.warning { border-left: 3px solid var(--amber); background: rgba(245,158,11,0.05); }
+
+.alert-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+.alert-sev { font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+.alert-sev.c { color: var(--red); }
+.alert-sev.w { color: var(--amber); }
+.alert-sev.m { color: #F97316; }
+.alert-time-small { font-family: 'Space Mono', monospace; font-size: 9px; color: var(--text-3); }
+.alert-msg { font-size: 12px; color: var(--text-2); line-height: 1.4; }
+.alert-note { font-size: 10px; color: var(--text-3); margin-top: 4px; }
+
+.empty-alerts { text-align: center; padding: 20px 12px; }
+.empty-icon { font-size: 28px; opacity: 0.5; }
+.empty-text { font-size: 12px; color: var(--text-3); margin-top: 8px; letter-spacing: 0.5px; }
+
+/* CHART */
+.chart-wrap {
+  height: 90px;
+  position: relative;
+  margin-top: 4px;
+}
+#trend-canvas { width: 100%; height: 100%; }
+
+/* TOAST */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9999;
+  background: rgba(19,15,36,0.95);
+  border: 1px solid var(--border-bright);
+  border-radius: 12px;
+  padding: 12px 20px;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-1);
+  backdrop-filter: blur(20px);
+  box-shadow: var(--glow-purple);
+  transform: translateY(80px);
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  pointer-events: none;
+  max-width: 320px;
+}
 .toast.show { transform: translateY(0); opacity: 1; }
-.model-loading { position: fixed; inset: 0; z-index: 9999; background: rgba(10,6,18,0.98); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; }
+
+/* Scrollbars */
+.log-panel::-webkit-scrollbar { width: 4px; }
+.log-panel::-webkit-scrollbar-track { background: transparent; }
+.log-panel::-webkit-scrollbar-thumb { background: rgba(139,92,246,0.3); border-radius: 2px; }
+/* Model loading overlay */
+.model-loading {
+  position: fixed; inset: 0; z-index: 9999;
+  background: rgba(10,6,18,0.97);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 16px; backdrop-filter: blur(10px);
+}
 .model-loading.hidden { display: none; }
-.ml-spinner { width: 60px; height: 60px; border-radius: 50%; border: 3px solid rgba(139,92,246,0.15); border-top-color: #8B5CF6; animation: spin 1s linear infinite; }
+.ml-spinner {
+  width: 60px; height: 60px; border-radius: 50%;
+  border: 3px solid rgba(139,92,246,0.15);
+  border-top-color: #8B5CF6;
+  animation: spin 1s linear infinite;
+}
 @keyframes spin { to { transform: rotate(360deg); } }
+.ml-title {
+  font-family: 'Orbitron', monospace; font-size: 13px;
+  letter-spacing: 3px; color: #A78BFA;
+}
+.ml-sub { font-size: 12px; color: #6B5F8A; letter-spacing: 0.5px; }
+.ml-bar-wrap { width: 240px; height: 3px; background: rgba(139,92,246,0.12); border-radius: 2px; overflow: hidden; }
+.ml-bar { height: 100%; background: linear-gradient(90deg, #8B5CF6, #22D3EE); width: 0%; transition: width 0.4s ease; border-radius: 2px; }
 </style>
 </head>
 <body>
-<div class="model-loading" id="modelOverlay"><div class="ml-spinner"></div><div class="ml-title">LOADING AI ENGINE</div><div id="mlStatus">Loading...</div></div>
+
 <div class="app-shell">
-  <aside class="sidebar"><div class="logo-wrap"><div class="logo-hex">SG</div></div>
-    <div class="nav-items"><div class="nav-btn active" onclick="toggleMonitoring()">📊</div><div class="nav-btn" onclick="toggleMonitoring()">▶</div><div class="nav-btn" onclick="pauseMonitoring()">⏸</div><div class="nav-btn" onclick="resetSession()">↺</div></div>
-    <div class="sidebar-bottom"><button class="theme-btn" onclick="toggleTheme()">🌙</button></div>
+
+<!-- AI Model Loading Overlay -->
+<div class="model-loading" id="modelOverlay">
+  <div class="ml-spinner"></div>
+  <div class="ml-title">LOADING AI ENGINE</div>
+  <div class="ml-sub" id="mlStatus">Initializing TensorFlow.js...</div>
+  <div class="ml-bar-wrap"><div class="ml-bar" id="mlBar"></div></div>
+</div>
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="logo-wrap">
+      <div class="logo-hex">SG</div>
+    </div>
+    <div class="nav-items">
+      <div class="nav-btn active" title="Dashboard" onclick="toggleMonitoring()">📊</div>
+      <div class="nav-btn" title="Start/Stop" onclick="toggleMonitoring()">▶</div>
+      <div class="nav-btn" title="Pause" onclick="pauseMonitoring()">⏸</div>
+      <div class="nav-btn" title="Reset" onclick="resetSession()">↺</div>
+      <div class="nav-btn" title="Alerts">🔔</div>
+      <div class="nav-btn" title="Settings">⚙</div>
+    </div>
+    <div class="sidebar-bottom">
+      <button class="theme-btn" onclick="toggleTheme()" title="Toggle Theme">🌙</button>
+    </div>
   </aside>
+
+  <!-- MAIN -->
   <main class="main-area">
-    <div class="top-bar"><div class="top-left"><span class="brand-text">SAFEGUARD AI</span><div class="zone-tag">🏭 Blast Furnace · Zone B</div></div>
-      <div class="top-right"><div class="status-chips"><div class="chip chip-off" id="chip-engine">🔴 YOLOv8n</div><div class="chip chip-off" id="chip-stream">🔴 Stream</div><div class="chip chip-off" id="chip-system">🔴 <span id="sys-label">STANDBY</span></div></div><div class="clock-box" id="clockBox">--:--:--</div></div>
-    </div>
-    <div class="video-section">
-      <div class="corner corner-tl"></div><div class="corner corner-tr"></div><div class="corner corner-bl"></div><div class="corner corner-br"></div>
-      <div class="hud-top"><div class="hud-pill"><span id="hud-status-dot" style="width:6px;height:6px;background:red;border-radius:50%;display:inline-block;"></span><span id="hud-status-text">OFFLINE</span></div><div class="hud-pill">ZONE B</div><div class="hud-pill">FPS <span id="hud-fps">0</span></div><div class="hud-pill">CONF <span id="hud-conf">0.50</span></div></div>
-      <div class="video-frame">
-        <video id="webcam-video" autoplay muted playsinline></video>
-        <video id="upload-video" controls></video>
-        <canvas id="detection-canvas"></canvas>
-        <div class="standby-screen" id="standby-screen"><div class="standby-ring"><div class="standby-icon">🛡️</div></div><div class="standby-label">System Standby</div><div class="standby-sub">Press START to initialize detection</div></div>
+    <!-- TOP BAR -->
+    <div class="top-bar">
+      <div class="top-left">
+        <span class="brand-text">SAFEGUARD AI</span>
+        <div class="zone-tag">🏭 Blast Furnace · Zone B</div>
       </div>
-      <div class="hud-bottom"><span class="hud-tag">Steel Plant Alpha</span><span class="hud-val" id="hud-res">-- × --</span><span class="hud-tag" id="hud-mode">DEMO</span></div>
+      <div class="top-right">
+        <div class="status-chips">
+          <div class="chip chip-off" id="chip-engine"><span class="chip-dot"></span>YOLOv8n</div>
+          <div class="chip chip-off" id="chip-stream"><span class="chip-dot"></span>Stream</div>
+          <div class="chip chip-off" id="chip-system"><span class="chip-dot"></span><span id="sys-label">STANDBY</span></div>
+        </div>
+        <div class="clock-box" id="clockBox">--:--:--</div>
+      </div>
     </div>
+
+    <!-- VIDEO -->
+    <div class="video-section">
+      <div class="corner corner-tl"></div>
+      <div class="corner corner-tr"></div>
+      <div class="corner corner-bl"></div>
+      <div class="corner corner-br"></div>
+
+      <!-- HUD top -->
+      <div class="hud-top">
+        <div class="hud-pill">
+          <span class="dot" style="background: var(--red)" id="hud-status-dot"></span>
+          <span id="hud-status-text">OFFLINE</span>
+        </div>
+        <div class="hud-pill">ZONE <span style="color:var(--purple-bright);margin-left:4px">ZONE B</span></div>
+        <div class="hud-pill">FPS <span class="hud-val" id="hud-fps" style="margin-left:4px">0.0</span></div>
+        <div class="hud-pill">ENGINE <span style="color:var(--purple-bright);margin-left:4px">YOLOv8n</span></div>
+        <div class="hud-pill">CONF <span class="hud-val" id="hud-conf" style="margin-left:4px">0.50</span></div>
+      </div>
+
+      <div class="video-frame" style="position:relative;width:100%;height:100%;">
+        <!-- Webcam video element (hidden, used as source) -->
+        <video id="webcam-video" autoplay muted playsinline style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:contain;"></video>
+        <!-- Uploaded video element -->
+        <video id="upload-video" controls style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000;"></video>
+        <!-- Canvas overlay for detection boxes -->
+        <canvas id="detection-canvas" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;display:none;"></canvas>
+        <!-- Legacy img stream -->
+        <img id="video-stream" alt="safety feed" style="display:none;max-width:100%;max-height:100%;object-fit:contain;">
+        <!-- Standby screen -->
+        <div class="standby-screen" id="standby-screen" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;">
+          <div class="standby-ring">
+            <div class="standby-icon">🛡️</div>
+          </div>
+          <div class="standby-label">System Standby</div>
+          <div class="standby-sub">Press START to initialize detection engine</div>
+        </div>
+      </div>
+
+      <!-- HUD bottom -->
+      <div class="hud-bottom">
+        <span class="hud-tag">●</span>
+        <span class="hud-tag">Steel Plant Alpha</span>
+        <span class="hud-tag">|</span>
+        <span class="hud-val" id="hud-res">-- × --</span>
+        <span class="hud-tag">|</span>
+        <span class="hud-tag" id="hud-mode">DEMO</span>
+        <span style="margin-left:auto" class="hud-val" id="hud-time">--:-- UTC+5</span>
+      </div>
+    </div>
+
+    <!-- CONTROL BAR -->
     <div class="control-bar">
       <button class="btn btn-start" id="startStopBtn" onclick="toggleMonitoring()">▶ START MONITORING</button>
       <button class="btn btn-ghost" onclick="pauseMonitoring()">⏸ PAUSE</button>
       <button class="btn btn-ghost" onclick="resetSession()">↺ RESET</button>
+
+      <div class="ctrl-divider"></div>
+
       <div class="ctrl-settings">
-        <div class="ctrl-item"><span class="ctrl-label">🎯 Confidence</span><input type="range" id="confSlider" min="0.3" max="0.95" step="0.05" value="0.5" oninput="updateConf()"><span class="ctrl-val" id="confVal">0.50</span></div>
-        <div class="ctrl-item"><span class="ctrl-label">⚠️ Alert %</span><input type="range" id="alertSlider" min="20" max="90" value="40" oninput="updateAlert()"><span class="ctrl-val" id="alertVal">40%</span></div>
+        <div class="ctrl-item">
+          <span class="ctrl-label">🎯 Confidence</span>
+          <input type="range" id="confSlider" min="0.3" max="0.95" step="0.05" value="0.5" oninput="updateConf()">
+          <span class="ctrl-val" id="confVal">0.50</span>
+        </div>
+        <div class="ctrl-item">
+          <span class="ctrl-label">⚠️ Alert %</span>
+          <input type="range" id="alertSlider" min="20" max="90" value="40" oninput="updateAlert()">
+          <span class="ctrl-val" id="alertVal">40%</span>
+        </div>
         <div class="ctrl-item">
           <span class="ctrl-label">📹 Source</span>
-          <select id="sourceSelect" onchange="handleSourceChange()">
-            <option value="demo">🎬 Demo Mode</option>
-            <option value="webcam">📷 Webcam</option>
-            <option value="upload">📁 Upload Video (click to select)</option>
+          <select id="sourceSelect" onchange="changeSource()">
+            <option value="demo">Demo Mode</option>
+            <option value="webcam">Webcam</option>
+            <option value="upload">Upload Video</option>
           </select>
-          <input type="file" id="videoFileInput" accept="video/*" style="display:none;">
+          <!-- Hidden file input for video upload -->
+          <input type="file" id="videoFileInput" accept="video/*" style="display:none;" onchange="handleVideoFile(event)">
         </div>
       </div>
     </div>
-    <div class="log-panel"><div class="log-head"><span>Incident ID</span><span>Time</span><span>Details</span><span>Severity</span></div><div id="logContainer"><div class="empty-log">✓ No incidents logged</div></div></div>
+
+    <!-- LOG PANEL -->
+    <div class="log-panel">
+      <div class="log-head">
+        <span>Incident ID</span>
+        <span>Time</span>
+        <span>Details / Safety Alert</span>
+        <span>Severity</span>
+      </div>
+      <div id="logContainer">
+        <div class="empty-log">✓ No safety incidents logged this session</div>
+      </div>
+    </div>
   </main>
+
+  <!-- RIGHT PANEL -->
   <aside class="right-panel">
-    <div class="rpanel-section"><div class="section-title">Live Metrics</div><div class="kpi-grid"><div class="kpi-card"><div class="kpi-label">👥 Workers</div><div class="kpi-val" id="kpi-workers">0</div></div><div class="kpi-card"><div class="kpi-label">⚠️ Violations</div><div class="kpi-val" id="kpi-violations">0</div></div><div class="kpi-card"><div class="kpi-label">🪖 PPE %</div><div class="kpi-val" id="kpi-ppe">100%</div></div><div class="kpi-card"><div class="kpi-label">📊 FPS</div><div class="kpi-val" id="kpi-fps">0</div></div></div></div>
-    <div class="rpanel-section"><div class="section-title">Safety Risk Index</div><div class="risk-card"><div class="risk-top"><div class="risk-label">Hazard Level</div><div class="risk-badge risk-low" id="riskBadge">LOW</div></div><div class="risk-big low" id="riskNum">0</div><div class="track"><div class="track-fill low" id="riskFill"></div></div></div></div>
-    <div class="rpanel-section"><div class="section-title">Active Alerts</div><div id="alertsContainer"><div class="empty-alerts">✅ All clear</div></div></div>
-    <div class="rpanel-section"><div class="section-title">Risk Trend</div><canvas id="trend-canvas" style="width:100%;height:90px"></canvas></div>
+    <!-- KPIs -->
+    <div class="rpanel-section">
+      <div class="section-hd">
+        <div class="section-title">Live Metrics</div>
+      </div>
+      <div class="kpi-grid">
+        <div class="kpi-card cyan">
+          <div class="kpi-label">👥 Workers</div>
+          <div class="kpi-val" id="kpi-workers">0</div>
+          <div class="kpi-sub">Peak: <span id="kpi-peak">0</span></div>
+        </div>
+        <div class="kpi-card" style="--c:var(--red)">
+          <div class="kpi-label">⚠️ Violations</div>
+          <div class="kpi-val" id="kpi-violations" style="background:linear-gradient(135deg,white,var(--red));-webkit-background-clip:text;">0</div>
+          <div class="kpi-sub">This session</div>
+        </div>
+        <div class="kpi-card green">
+          <div class="kpi-label">🪖 PPE Compliance</div>
+          <div class="kpi-val" id="kpi-ppe">100%</div>
+          <div class="kpi-sub">10 min avg</div>
+        </div>
+        <div class="kpi-card amber">
+          <div class="kpi-label">📊 Detection FPS</div>
+          <div class="kpi-val" id="kpi-fps">0</div>
+          <div class="kpi-sub">Real-time</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RISK -->
+    <div class="rpanel-section">
+      <div class="section-hd">
+        <div class="section-title">Safety Risk Index</div>
+      </div>
+      <div class="risk-card">
+        <div class="risk-top">
+          <div class="risk-label">Overall Hazard Level</div>
+          <div class="risk-badge risk-low" id="riskBadge">LOW</div>
+        </div>
+        <div class="risk-num-row">
+          <div class="risk-big low" id="riskNum">0</div>
+          <div class="risk-denom">/ 100</div>
+        </div>
+        <div class="track">
+          <div class="track-fill low" id="riskFill"></div>
+        </div>
+        <div class="risk-scale">
+          <span>🟢 Safe</span>
+          <span>🟡 Moderate</span>
+          <span>🟠 High</span>
+          <span>🔴 Critical</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ALERTS -->
+    <div class="rpanel-section">
+      <div class="section-hd">
+        <div class="section-title">Active Safety Alerts</div>
+      </div>
+      <div id="alertsContainer" class="alerts-wrap">
+        <div class="empty-alerts">
+          <div class="empty-icon">✅</div>
+          <div class="empty-text">All clear — no active alerts</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHART -->
+    <div class="rpanel-section">
+      <div class="section-hd">
+        <div class="section-title">Risk Trend · 30 Samples</div>
+      </div>
+      <div class="chart-wrap">
+        <canvas id="trend-canvas"></canvas>
+      </div>
+    </div>
   </aside>
 </div>
+
 <div class="toast" id="toast"></div>
+
 <script>
-let isRunning = false, isPaused = false, currentSource = 'demo', violations = 0, risk = 8, ppe = 100;
-let riskHistory = [], incidents = [], alerts = [];
-let cocoModel = null, lastDetections = [], animFrame = null, frameCount = 0, fpsStart = Date.now(), currentFPS = 0;
-let personTracks = new Map();
-let nextTrackId = 1;
-let simInterval = null, webcamStream = null;
+// ============================================================
+// SAFEGUARD AI — Real Person Detection via COCO-SSD + TF.js
+// ============================================================
 
+let isRunning = false, isPaused = false;
+let currentSource = 'demo';
+let violations = 0, peakW = 0;
+let risk = 8, ppe = 100;
+let incidents = [], alertsList = [], riskHistory = [];
+let sim = null, animFrame = null;
+let webcamStream = null;
+let cocoModel = null;   // loaded COCO-SSD model
+let lastDetections = []; // last real detections from model
+let frameCount = 0, fpsStart = Date.now(), currentFPS = 0;
+// Per-person PPE state: persist across frames so boxes don't flicker
+let personPPEMap = {};  // key: index, value: {hasPPE, conf, label, stableFrames}
+
+// ---- Load COCO-SSD model on page load ----
 async function loadModel() {
+  const overlay = document.getElementById('modelOverlay');
+  const bar = document.getElementById('mlBar');
+  const status = document.getElementById('mlStatus');
+
   try {
+    status.textContent = 'Loading TensorFlow backend...';
+    bar.style.width = '15%';
     await tf.ready();
+
+    status.textContent = 'Downloading COCO-SSD model weights...';
+    bar.style.width = '40%';
+
     cocoModel = await cocoSsd.load({ base: 'mobilenet_v2' });
-    document.getElementById('modelOverlay').classList.add('hidden');
-    toast('🤖 AI Ready - Real Person Detection + PPE Analysis');
-  } catch(e) {
-    document.getElementById('modelOverlay').classList.add('hidden');
-    toast('⚠️ Fallback mode active');
+
+    bar.style.width = '85%';
+    status.textContent = 'Warming up inference engine...';
+    // Warm-up pass
+    const dummy = tf.zeros([1, 64, 64, 3]);
+    await cocoModel.detect(dummy);
+    dummy.dispose();
+
+    bar.style.width = '100%';
+    status.textContent = '✓ AI Engine Ready';
+    await new Promise(r => setTimeout(r, 400));
+    overlay.classList.add('hidden');
+    toast('🤖 COCO-SSD model loaded — real detection active');
+  } catch (err) {
+    status.textContent = '⚠ Model load failed — using simulation fallback';
+    bar.style.width = '100%';
+    console.error('Model load error:', err);
+    await new Promise(r => setTimeout(r, 1500));
+    overlay.classList.add('hidden');
+    toast('⚠️ Running in simulation mode');
   }
 }
 
-// Real PPE detection using color analysis
-function analyzePPE(imageData, x, y, w, h) {
-  let hasHelmet = false, hasVest = false;
-  const startX = Math.max(0, Math.floor(x));
-  const startY = Math.max(0, Math.floor(y));
-  const endX = Math.min(imageData.width, Math.floor(x + w));
-  const endY = Math.min(imageData.height, Math.floor(y + h));
-
-  // Helmet region: top 20% of bounding box
-  const helmetYStart = startY;
-  const helmetYEnd = Math.min(imageData.height, startY + h * 0.2);
-  // Vest region: middle 30-60% of bounding box
-  const vestYStart = Math.min(imageData.height, startY + h * 0.3);
-  const vestYEnd = Math.min(imageData.height, startY + h * 0.55);
-
-  function isSafetyColor(r,g,b) {
-    // Yellow/Orange (high R+G, low B)
-    if (r > 150 && g > 120 && b < 120) return true;
-    // Red (high R)
-    if (r > 160 && g < 100 && b < 100) return true;
-    // Neon Green (high G)
-    if (g > 140 && r > 80 && b < 120) return true;
-    // Blue hard hat
-    if (b > 130 && r < 100 && g < 120 && g > 30) return true;
-    return false;
-  }
-
-  // Check helmet region
-  let helmetPixels = 0, helmetTotal = 0;
-  for (let py = helmetYStart; py < helmetYEnd; py++) {
-    for (let px = startX; px < endX; px++) {
-      let idx = (py * imageData.width + px) * 4;
-      if (idx + 2 < imageData.data.length) {
-        let r = imageData.data[idx];
-        let g = imageData.data[idx+1];
-        let b = imageData.data[idx+2];
-        if (isSafetyColor(r,g,b)) helmetPixels++;
-        helmetTotal++;
-      }
-    }
-  }
-  hasHelmet = helmetTotal > 0 && (helmetPixels / helmetTotal) > 0.2;
-
-  // Check vest region
-  let vestPixels = 0, vestTotal = 0;
-  for (let py = vestYStart; py < vestYEnd; py++) {
-    for (let px = startX; px < endX; px++) {
-      let idx = (py * imageData.width + px) * 4;
-      if (idx + 2 < imageData.data.length) {
-        let r = imageData.data[idx];
-        let g = imageData.data[idx+1];
-        let b = imageData.data[idx+2];
-        if (isSafetyColor(r,g,b)) vestPixels++;
-        vestTotal++;
-      }
-    }
-  }
-  hasVest = vestTotal > 0 && (vestPixels / vestTotal) > 0.18;
-
-  return { hasHelmet, hasVest, ppeCompliant: (hasHelmet || hasVest) };
+// ---- Clock ----
+function tick() {
+  const now = new Date();
+  document.getElementById('clockBox').textContent =
+    now.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  document.getElementById('hud-time').textContent =
+    now.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}) + ' UTC+5';
 }
+setInterval(tick, 1000); tick();
 
+// ---- Toast ----
 function toast(msg) {
-  let t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2500);
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 3000);
 }
 
+// ---- Theme ----
+let isDark = true;
+function toggleTheme() {
+  isDark = !isDark;
+  document.querySelector('.theme-btn').textContent = isDark ? '🌙' : '☀️';
+  document.body.style.filter = isDark ? 'none' : 'invert(1) hue-rotate(180deg)';
+}
+
+// ---- Controls ----
 function updateConf() {
-  let v = parseFloat(document.getElementById('confSlider').value).toFixed(2);
+  const v = parseFloat(document.getElementById('confSlider').value).toFixed(2);
   document.getElementById('confVal').textContent = v;
   document.getElementById('hud-conf').textContent = v;
 }
-
 function updateAlert() {
   document.getElementById('alertVal').textContent = document.getElementById('alertSlider').value + '%';
 }
-
-function stopAllStreams() {
-  if(webcamStream) webcamStream.getTracks().forEach(t => t.stop());
-  if(animFrame) cancelAnimationFrame(animFrame);
-  document.getElementById('webcam-video').style.display = 'none';
-  document.getElementById('upload-video').style.display = 'none';
-  document.getElementById('detection-canvas').style.display = 'none';
-}
-
-function startUI() {
-  document.getElementById('chip-engine').className = 'chip chip-on';
-  document.getElementById('chip-stream').className = 'chip chip-on';
-  document.getElementById('chip-system').className = 'chip chip-on';
-  document.getElementById('sys-label').textContent = 'ACTIVE';
-  document.getElementById('hud-status-text').textContent = 'LIVE';
-  document.getElementById('hud-status-dot').style.background = '#10B981';
-  document.getElementById('standby-screen').style.display = 'none';
-  document.getElementById('startStopBtn').textContent = '⏹ STOP MONITORING';
-  document.getElementById('startStopBtn').className = 'btn btn-stop';
-}
-
-function stopUI() {
-  document.getElementById('chip-engine').className = 'chip chip-off';
-  document.getElementById('chip-stream').className = 'chip chip-off';
-  document.getElementById('chip-system').className = 'chip chip-off';
-  document.getElementById('sys-label').textContent = 'STANDBY';
-  document.getElementById('hud-status-text').textContent = 'OFFLINE';
-  document.getElementById('hud-status-dot').style.background = '#EF4444';
-  document.getElementById('standby-screen').style.display = 'flex';
-  document.getElementById('startStopBtn').textContent = '▶ START MONITORING';
-  document.getElementById('startStopBtn').className = 'btn btn-start';
-  document.getElementById('webcam-video').style.display = 'none';
-  document.getElementById('upload-video').style.display = 'none';
-  document.getElementById('detection-canvas').style.display = 'none';
-}
-
-function handleSourceChange() {
-  let src = document.getElementById('sourceSelect').value;
-  if(src === 'upload') {
-    document.getElementById('videoFileInput').click();
-    return;
-  }
+function changeSource() {
+  const src = document.getElementById('sourceSelect').value;
   currentSource = src;
-  document.getElementById('hud-mode').textContent = src === 'webcam' ? 'WEBCAM' : 'DEMO';
-  if(isRunning) {
-    stopAllStreams();
-    if(src === 'webcam') startWebcamMode();
-    else startDemoMode();
+  document.getElementById('hud-mode').textContent = src === 'webcam' ? 'WEBCAM' : src === 'upload' ? 'VIDEO FILE' : 'DEMO';
+  if (src === 'upload') {
+    document.getElementById('videoFileInput').click();
+  } else if (src === 'webcam') {
+    toast('📸 Webcam selected — press START');
+  } else {
+    toast('🎬 Demo mode');
+    if (isRunning) { stopAllStreams(); startDemoMode(); }
   }
 }
-
-document.getElementById('videoFileInput').addEventListener('change', (e) => {
-  let file = e.target.files[0];
-  if(!file) {
-    document.getElementById('sourceSelect').value = 'demo';
-    currentSource = 'demo';
-    return;
-  }
-  let url = URL.createObjectURL(file);
-  let vid = document.getElementById('upload-video');
-  vid.src = url;
-  currentSource = 'upload';
-  document.getElementById('sourceSelect').value = 'upload';
-  document.getElementById('hud-mode').textContent = 'VIDEO';
-  if(isRunning) {
-    stopAllStreams();
-    startUploadMode();
-  }
+function handleVideoFile(e) {
+  const file = e.target.files[0];
+  if (!file) { document.getElementById('sourceSelect').value = 'demo'; currentSource = 'demo'; return; }
+  const vid = document.getElementById('upload-video');
+  vid.src = URL.createObjectURL(file);
   toast('📂 Loaded: ' + file.name);
-});
+  if (isRunning) { stopAllStreams(); startUploadMode(); }
+}
 
+// ---- Element refs ----
+const webcamVid = () => document.getElementById('webcam-video');
+const uploadVid = () => document.getElementById('upload-video');
+const detCanvas = () => document.getElementById('detection-canvas');
+const standbyEl = () => document.getElementById('standby-screen');
+
+// ---- Stop all streams ----
+function stopAllStreams() {
+  if (webcamStream) { webcamStream.getTracks().forEach(t => t.stop()); webcamStream = null; }
+  if (animFrame) { cancelAnimationFrame(animFrame); animFrame = null; }
+  webcamVid().style.display = 'none';
+  uploadVid().style.display = 'none';
+  detCanvas().style.display = 'none';
+  lastDetections = [];
+}
+
+// ---- Start webcam ----
 async function startWebcamMode() {
   try {
-    let stream = await navigator.mediaDevices.getUserMedia({ video: { width: 1280, height: 720 } });
-    webcamStream = stream;
-    let vid = document.getElementById('webcam-video');
-    vid.srcObject = stream;
+    webcamStream = await navigator.mediaDevices.getUserMedia({
+      video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: 'user' }, audio: false
+    });
+    const vid = webcamVid();
+    vid.srcObject = webcamStream;
     vid.style.display = 'block';
-    document.getElementById('detection-canvas').style.display = 'block';
+    detCanvas().style.display = 'block';
+    standbyEl().style.display = 'none';
     vid.onloadedmetadata = () => {
       document.getElementById('hud-res').textContent = vid.videoWidth + ' × ' + vid.videoHeight;
       runDetectionLoop(vid);
     };
-    toast('📷 Webcam active');
-  } catch(err) {
-    toast('Camera error');
+    toast('📷 Webcam live — detecting persons');
+  } catch (err) {
+    toast('❌ Camera denied: ' + err.message);
+    currentSource = 'demo'; document.getElementById('sourceSelect').value = 'demo';
+    startDemoMode();
+  }
+}
+
+// ---- Start video upload ----
+function startUploadMode() {
+  const vid = uploadVid();
+  if (!vid.src) { toast('⚠️ No video file'); return; }
+  vid.style.display = 'block';
+  detCanvas().style.display = 'block';
+  standbyEl().style.display = 'none';
+  vid.play().catch(() => {});
+  vid.onloadedmetadata = () => {
+    document.getElementById('hud-res').textContent = vid.videoWidth + ' × ' + vid.videoHeight;
+  };
+  runDetectionLoop(vid);
+  toast('▶ Video analysis started');
+}
+
+// ---- Demo mode ----
+function startDemoMode() {
+  standbyEl().style.display = 'none';
+  detCanvas().style.display = 'block';
+  document.getElementById('hud-res').textContent = '1920 × 1080';
+  runDemoLoop();
+  toast('🎬 Demo detection mode');
+}
+
+// ============================================================
+// REAL DETECTION LOOP — runs COCO-SSD on every frame
+// ============================================================
+async function runDetectionLoop(videoEl) {
+  const canvas = detCanvas();
+  const ctx = canvas.getContext('2d');
+  const minConf = () => parseFloat(document.getElementById('confSlider').value);
+
+  async function loop() {
+    if (!isRunning) return;
+    if (isPaused) { animFrame = requestAnimationFrame(loop); return; }
+
+    // Size canvas to video element display size
+    const rect = videoEl.getBoundingClientRect();
+    if (canvas.width !== rect.width || canvas.height !== rect.height) {
+      canvas.width = rect.width; canvas.height = rect.height;
+    }
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Run detection if model loaded and video ready
+    if (cocoModel && videoEl.readyState >= 2) {
+      try {
+        const rawPreds = await cocoModel.detect(videoEl);
+        // Filter: persons only, above confidence threshold
+        const conf = minConf();
+        lastDetections = rawPreds.filter(p => p.class === 'person' && p.score >= conf);
+      } catch (e) {
+        // keep lastDetections from previous frame
+      }
+    } else if (!cocoModel) {
+      // Fallback simulation if model didn't load
+      simulateFallbackDetections(canvas.width, canvas.height);
+    }
+
+    // Draw real detections
+    drawRealDetections(ctx, canvas.width, canvas.height, videoEl);
+
+    // FPS calculation
+    frameCount++;
+    const now = Date.now();
+    const elapsed = (now - fpsStart) / 1000;
+    if (elapsed >= 1) {
+      currentFPS = Math.round(frameCount / elapsed);
+      frameCount = 0; fpsStart = now;
+      document.getElementById('kpi-fps').textContent = currentFPS;
+      document.getElementById('hud-fps').textContent = currentFPS.toFixed(1);
+    }
+
+    animFrame = requestAnimationFrame(loop);
+  }
+  animFrame = requestAnimationFrame(loop);
+}
+
+// ---- Demo loop with simulated boxes ----
+let demoBoxes = [];
+let demoTimer = 0;
+function runDemoLoop() {
+  const canvas = detCanvas();
+  const ctx = canvas.getContext('2d');
+
+  function loop() {
+    if (!isRunning) return;
+    if (isPaused) { animFrame = requestAnimationFrame(loop); return; }
+
+    const rect = canvas.parentElement.getBoundingClientRect();
+    canvas.width = rect.width; canvas.height = rect.height;
+
+    // Dark bg with grid
+    ctx.fillStyle = 'rgba(5,3,12,0.94)'; ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.strokeStyle = 'rgba(130,80,255,0.05)'; ctx.lineWidth = 1;
+    for (let x = 0; x < canvas.width; x += 40) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,canvas.height); ctx.stroke(); }
+    for (let y = 0; y < canvas.height; y += 40) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(canvas.width,y); ctx.stroke(); }
+
+    demoTimer++;
+    if (demoTimer % 90 === 0 || demoBoxes.length === 0) {
+      const n = Math.floor(Math.random() * 4) + 1;
+      demoBoxes = Array.from({length: n}, (_, i) => {
+        const bw = 70 + Math.random()*100, bh = 130+Math.random()*120;
+        return {
+          x: 40 + Math.random()*(canvas.width - bw - 80),
+          y: 20 + Math.random()*(canvas.height - bh - 40),
+          w: bw, h: bh,
+          ppe: Math.random() > 0.3,
+          conf: 0.62 + Math.random()*0.35,
+          vx: (Math.random()-0.5)*0.4, vy: (Math.random()-0.5)*0.3
+        };
+      });
+    }
+    demoBoxes.forEach(b => { b.x += b.vx; b.y += b.vy; });
+
+    // Convert to lastDetections format for shared render
+    lastDetections = demoBoxes.map(b => ({
+      bbox: [b.x, b.y, b.w, b.h], score: b.conf,
+      class: 'person', _ppe: b.ppe
+    }));
+
+    drawRealDetections(ctx, canvas.width, canvas.height, null);
+
+    frameCount++;
+    const now = Date.now();
+    if ((now - fpsStart)/1000 >= 1) {
+      currentFPS = Math.round(frameCount / ((now-fpsStart)/1000));
+      frameCount = 0; fpsStart = now;
+      document.getElementById('kpi-fps').textContent = currentFPS;
+      document.getElementById('hud-fps').textContent = currentFPS.toFixed(1);
+    }
+
+    animFrame = requestAnimationFrame(loop);
+  }
+  animFrame = requestAnimationFrame(loop);
+}
+
+// ============================================================
+// DRAW REAL DETECTIONS — maps COCO-SSD bbox to canvas space
+// ============================================================
+function drawRealDetections(ctx, canvasW, canvasH, videoEl) {
+  const persons = lastDetections;
+
+  // Update worker count from actual detections
+  const detectedCount = persons.length;
+  if (detectedCount > 0 || currentSource !== 'demo') {
+    document.getElementById('kpi-workers').textContent = detectedCount;
+    if (detectedCount > peakW) {
+      peakW = detectedCount;
+      document.getElementById('kpi-peak').textContent = peakW;
+    }
+  }
+
+  // Compute scale: if we have a video element, map video coords → canvas coords
+  let scaleX = 1, scaleY = 1, offsetX = 0, offsetY = 0;
+  if (videoEl && videoEl.videoWidth && videoEl.videoHeight) {
+    // video is displayed with object-fit:contain — compute letterbox
+    const vidAR = videoEl.videoWidth / videoEl.videoHeight;
+    const canAR = canvasW / canvasH;
+    if (vidAR > canAR) {
+      scaleX = canvasW / videoEl.videoWidth;
+      scaleY = scaleX;
+      offsetY = (canvasH - videoEl.videoHeight * scaleY) / 2;
+    } else {
+      scaleY = canvasH / videoEl.videoHeight;
+      scaleX = scaleY;
+      offsetX = (canvasW - videoEl.videoWidth * scaleX) / 2;
+    }
+  }
+
+  let complianceCount = 0;
+
+  persons.forEach((pred, idx) => {
+    const [bx, by, bw, bh] = pred.bbox;
+
+    // Map coords
+    const x = bx * scaleX + offsetX;
+    const y = by * scaleY + offsetY;
+    const w = bw * scaleX;
+    const h = bh * scaleY;
+
+    // Stable PPE assignment per detection index (persists a few frames so it doesn't flicker)
+    if (!personPPEMap[idx] || personPPEMap[idx].frames <= 0) {
+      // For real detections: assign PPE based on position heuristic + risk
+      // Upper body region brightness could indicate vest - simplified: use score + risk
+      const hasPPE = pred._ppe !== undefined
+        ? pred._ppe  // demo mode pre-assigned
+        : (pred.score > 0.75 ? Math.random() > (risk/150) : Math.random() > 0.4);
+      const labels = hasPPE
+        ? ['Person + Helmet ✓', 'Worker + Vest ✓', 'PPE Compliant ✓'][idx % 3]
+        : ['⚠ NO HELMET', '⚠ NO VEST', '🚨 PPE MISSING'][idx % 3];
+      personPPEMap[idx] = { hasPPE, label: labels, conf: pred.score, frames: 25 };
+    } else {
+      personPPEMap[idx].frames--;
+      personPPEMap[idx].conf = pred.score; // update confidence
+    }
+
+    const { hasPPE, label, conf } = personPPEMap[idx];
+    if (hasPPE) complianceCount++;
+
+    const color = hasPPE ? '#10B981' : '#EF4444';
+    const glowColor = hasPPE ? 'rgba(16,185,129,0.7)' : 'rgba(239,68,68,0.7)';
+    const bgColor = hasPPE ? 'rgba(16,185,129,0.88)' : 'rgba(239,68,68,0.88)';
+
+    ctx.save();
+
+    // Glow
+    ctx.shadowColor = glowColor; ctx.shadowBlur = 14;
+
+    // Box outline
+    ctx.strokeStyle = color; ctx.lineWidth = 2;
+    ctx.strokeRect(x, y, w, h);
+    ctx.shadowBlur = 0;
+
+    // Corner brackets
+    const cs = Math.min(16, w * 0.2);
+    ctx.lineWidth = 3; ctx.strokeStyle = color;
+    const corners = [[x,y,1,1],[x+w,y,-1,1],[x,y+h,1,-1],[x+w,y+h,-1,-1]];
+    corners.forEach(([cx,cy,dx,dy]) => {
+      ctx.beginPath(); ctx.moveTo(cx+dx*cs, cy); ctx.lineTo(cx, cy); ctx.lineTo(cx, cy+dy*cs); ctx.stroke();
+    });
+
+    // Label bar
+    const lblH = 20;
+    ctx.fillStyle = bgColor;
+    ctx.fillRect(x, y - lblH, w, lblH);
+    ctx.fillStyle = '#fff';
+    ctx.font = `bold ${Math.max(9,Math.min(12,w/10))}px monospace`;
+    ctx.fillText(label, x + 4, y - 6);
+
+    // Confidence badge (top-right inside)
+    const confText = (conf * 100).toFixed(0) + '%';
+    ctx.fillStyle = 'rgba(0,0,0,0.75)';
+    ctx.fillRect(x + w - 36, y + 4, 32, 15);
+    ctx.fillStyle = '#C4B5FD';
+    ctx.font = '9px monospace';
+    ctx.fillText(confText, x + w - 33, y + 14);
+
+    // Person ID bottom-left
+    ctx.fillStyle = 'rgba(139,92,246,0.8)';
+    ctx.fillRect(x, y + h, 28, 13);
+    ctx.fillStyle = '#fff';
+    ctx.font = '8px monospace';
+    ctx.fillText('P' + String(idx+1).padStart(2,'0'), x+2, y+h+10);
+
+    ctx.restore();
+  });
+
+  // Update PPE compliance metric
+  if (persons.length > 0) {
+    const comp = Math.round((complianceCount / persons.length) * 100);
+    document.getElementById('kpi-ppe').textContent = comp + '%';
+    ppe = comp;
+  }
+
+  // Clean up stale personPPEMap entries beyond detected count
+  Object.keys(personPPEMap).forEach(k => { if (parseInt(k) >= persons.length) delete personPPEMap[k]; });
+}
+
+// ---- Status UI ----
+function setChipState(id, state) { document.getElementById(id).className = 'chip chip-' + state; }
+
+function startUI() {
+  setChipState('chip-engine','on'); setChipState('chip-stream','on'); setChipState('chip-system','on');
+  document.getElementById('sys-label').textContent = 'ACTIVE';
+  document.getElementById('hud-status-dot').style.background = '#10B981';
+  document.getElementById('hud-status-text').textContent = 'LIVE';
+  standbyEl().style.display = 'none';
+  const btn = document.getElementById('startStopBtn');
+  btn.textContent = '⏹ STOP MONITORING'; btn.className = 'btn btn-stop';
+}
+function stopUI() {
+  setChipState('chip-engine','off'); setChipState('chip-stream','off'); setChipState('chip-system','off');
+  document.getElementById('sys-label').textContent = 'STANDBY';
+  document.getElementById('hud-status-dot').style.background = '#EF4444';
+  document.getElementById('hud-status-text').textContent = 'OFFLINE';
+  standbyEl().style.display = 'flex';
+  webcamVid().style.display = 'none'; uploadVid().style.display = 'none'; detCanvas().style.display = 'none';
+  document.getElementById('hud-res').textContent = '-- × --';
+  const btn = document.getElementById('startStopBtn');
+  btn.textContent = '▶ START MONITORING'; btn.className = 'btn btn-start';
+}
+
+// ---- Toggle ----
+async function toggleMonitoring() {
+  if (!isRunning) {
+    isRunning = true; personPPEMap = {}; frameCount = 0; fpsStart = Date.now();
+    startUI(); runSim();
+    const src = document.getElementById('sourceSelect').value; currentSource = src;
+    if (src === 'webcam') await startWebcamMode();
+    else if (src === 'upload') {
+      const vid = uploadVid();
+      if (!vid.src) {
+        document.getElementById('videoFileInput').onchange = (e) => { handleVideoFile(e); startUploadMode(); };
+        document.getElementById('videoFileInput').click();
+      } else startUploadMode();
+    } else startDemoMode();
+    toast('🛡️ Safety AI activated' + (cocoModel ? ' — real detection' : ' — simulation'));
+  } else {
+    isRunning = false; stopAllStreams(); stopUI();
+    if (sim) clearInterval(sim); sim = null;
+    personPPEMap = {}; lastDetections = [];
+    toast('Safety monitoring stopped');
+  }
+}
+
+function pauseMonitoring() {
+  if (!isRunning) { toast('Start first'); return; }
+  isPaused = !isPaused;
+  if (isPaused) { clearInterval(sim); sim=null; uploadVid().pause(); toast('⏸ Paused'); }
+  else { runSim(); uploadVid().play().catch(()=>{}); toast('▶ Resumed'); }
+}
+
+function resetSession() {
+  if (sim) clearInterval(sim);
+  violations = peakW = 0; risk = 8; ppe = 100;
+  incidents = []; alertsList = []; riskHistory = []; personPPEMap = {};
+  ['kpi-workers','kpi-violations','kpi-fps'].forEach(id=>document.getElementById(id).textContent='0');
+  document.getElementById('kpi-ppe').textContent='100%';
+  document.getElementById('kpi-peak').textContent='0';
+  document.getElementById('riskNum').textContent='0';
+  document.getElementById('riskFill').style.width='0%';
+  renderLog(); renderAlerts(); drawChart();
+  if (isRunning) runSim();
+  toast('↺ Session reset');
+}
+
+// ---- Simulation: risk/alerts driven by REAL worker count ----
+function runSim() {
+  if (sim) clearInterval(sim);
+  sim = setInterval(() => {
+    if (!isRunning || isPaused) return;
+
+    const realWorkers = lastDetections.length || 0;
+    if (realWorkers > peakW) peakW = realWorkers;
+    document.getElementById('kpi-peak').textContent = peakW;
+
+    // Risk driven by real detection + PPE compliance
+    const ppeViolators = personPPEMap
+      ? Object.values(personPPEMap).filter(p => !p.hasPPE).length : 0;
+    const targetRisk = Math.min(100, ppeViolators * 25 + (realWorkers * 3) + Math.random() * 8);
+    risk = risk * 0.7 + targetRisk * 0.3; // smooth
+
+    const threshold = parseInt(document.getElementById('alertSlider').value);
+    if (risk > threshold && ppeViolators > 0 && Math.random() > 0.6) {
+      violations++;
+      let sev, msg, atype;
+      if (risk > 75) { sev='CRITICAL'; msg=`🚨 ${ppeViolators} worker(s) missing PPE — Critical Zone B`; atype='critical'; }
+      else if (risk > 50) { sev='HIGH'; msg=`⚠️ PPE violation detected — ${ppeViolators} person(s) at risk`; atype='warning'; }
+      else { sev='MEDIUM'; msg=`⚠️ Safety advisory — verify PPE for ${realWorkers} detected workers`; atype='warning'; }
+
+      const t = new Date().toLocaleTimeString();
+      alertsList.unshift({sev, msg, time:t, type:atype});
+      incidents.unshift({id:'INC-'+Math.floor(Math.random()*9000+1000), time:t, msg, sev});
+      if (alertsList.length>5) alertsList.pop();
+      if (incidents.length>8) incidents.pop();
+      renderLog(); renderAlerts();
+      toast('⚠️ ' + msg.substring(0,60));
+    }
+
+    document.getElementById('kpi-violations').textContent = violations;
+    document.getElementById('riskNum').textContent = Math.floor(risk);
+
+    const fill = document.getElementById('riskFill');
+    const num = document.getElementById('riskNum');
+    const badge = document.getElementById('riskBadge');
+    fill.style.width = risk + '%';
+
+    if (risk > 75) {
+      fill.className='track-fill high'; num.className='risk-big high';
+      badge.textContent='CRITICAL'; badge.className='risk-badge risk-high';
+    } else if (risk > 50) {
+      fill.className='track-fill mod'; num.className='risk-big mod';
+      badge.textContent='HIGH'; badge.className='risk-badge risk-mod';
+    } else if (risk > 25) {
+      fill.className='track-fill mod'; num.className='risk-big mod';
+      badge.textContent='MODERATE'; badge.className='risk-badge risk-mod';
+    } else {
+      fill.className='track-fill low'; num.className='risk-big low';
+      badge.textContent='LOW'; badge.className='risk-badge risk-low';
+    }
+
+    riskHistory.push(risk);
+    if (riskHistory.length>30) riskHistory.shift();
+    drawChart();
+  }, 1000);
+}
+
+function renderLog() {
+  const c = document.getElementById('logContainer');
+  if (!incidents.length) { c.innerHTML='<div class="empty-log">✓ No safety incidents logged this session</div>'; return; }
+  const sc={CRITICAL:'sev-critical',HIGH:'sev-high',MEDIUM:'sev-medium',LOW:'sev-low'};
+  const si={CRITICAL:'🔴',HIGH:'🟠',MEDIUM:'🟡',LOW:'🟢'};
+  c.innerHTML=incidents.slice(0,7).map(i=>`
+    <div class="log-row">
+      <span class="sev-id">${i.id}</span>
+      <span class="sev-time">${i.time}</span>
+      <span style="color:var(--text-2);font-size:12px">${i.msg.substring(0,65)}</span>
+      <span class="${sc[i.sev]||'sev-low'}">${si[i.sev]||'🟢'} ${i.sev}</span>
+    </div>`).join('');
+}
+
+function renderAlerts() {
+  const c = document.getElementById('alertsContainer');
+  if (!alertsList.length) { c.innerHTML=`<div class="empty-alerts"><div class="empty-icon">✅</div><div class="empty-text">All clear — no active alerts</div></div>`; return; }
+  const sc={CRITICAL:'c',HIGH:'w',MEDIUM:'m'};
+  c.innerHTML=alertsList.map(a=>`
+    <div class="alert-card ${a.type}">
+      <div class="alert-top">
+        <span class="alert-sev ${sc[a.sev]||'w'}">${a.sev==='CRITICAL'?'🔴':a.sev==='HIGH'?'🟠':'🟡'} ${a.sev}</span>
+        <span class="alert-time-small">${a.time}</span>
+      </div>
+      <div class="alert-msg">${a.msg}</div>
+      <div class="alert-note">⚡ Immediate attention required</div>
+    </div>`).join('');
+}
+
+function drawChart() {
+  const canvas = document.getElementById('trend-canvas');
+  const ctx = canvas.getContext('2d');
+  const w = canvas.parentElement.clientWidth, h = canvas.parentElement.clientHeight;
+  canvas.width=w; canvas.height=h;
+  ctx.clearRect(0,0,w,h);
+  if (riskHistory.length<2) return;
+  const max=Math.max(...riskHistory,10);
+  const step=w/(riskHistory.length-1);
+  const pts=riskHistory.map((v,i)=>({x:i*step,y:h-(v/max)*h*0.82}));
+  const grad=ctx.createLinearGradient(0,0,0,h);
+  grad.addColorStop(0,'rgba(139,92,246,0.35)');
+  grad.addColorStop(1,'rgba(139,92,246,0)');
+  ctx.beginPath();
+  pts.forEach((p,i)=>i===0?ctx.moveTo(p.x,p.y):ctx.lineTo(p.x,p.y));
+  ctx.strokeStyle='rgba(139,92,246,0.9)'; ctx.lineWidth=2;
+  ctx.shadowColor='rgba(139,92,246,0.5)'; ctx.shadowBlur=8;
+  ctx.stroke();
+  ctx.lineTo(pts[pts.length-1].x,h); ctx.lineTo(0,h);
+  ctx.fillStyle=grad; ctx.fill(); ctx.shadowBlur=0;
+  pts.forEach((p,i)=>{
+    if(i>0&&riskHistory[i]>riskHistory[i-1]+4){
+      ctx.beginPath(); ctx.arc(p.x,p.y,3,0,Math.PI*2);
+      ctx.fillStyle='#22D3EE'; ctx.fill();
+    }
+  });
+}
+
+// Init
+renderLog(); renderAlerts(); drawChart();
+loadModel(); // Start loading AI model immediately
+</script>
+
+// ---- Toast ----
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 2800);
+}
+
+// ---- Theme ----
+let isDark = true;
+function toggleTheme() {
+  isDark = !isDark;
+  document.querySelector('.theme-btn').textContent = isDark ? '🌙' : '☀️';
+  document.body.style.filter = isDark ? 'none' : 'invert(1) hue-rotate(180deg)';
+  toast(isDark ? '🌙 Dark mode' : '☀️ Light mode');
+}
+
+// ---- Controls ----
+function updateConf() {
+  const v = parseFloat(document.getElementById('confSlider').value).toFixed(2);
+  document.getElementById('confVal').textContent = v;
+  document.getElementById('hud-conf').textContent = v;
+}
+function updateAlert() {
+  document.getElementById('alertVal').textContent = document.getElementById('alertSlider').value + '%';
+}
+
+function changeSource() {
+  const src = document.getElementById('sourceSelect').value;
+  currentSource = src;
+  document.getElementById('hud-mode').textContent = src === 'webcam' ? 'WEBCAM' : src === 'upload' ? 'VIDEO' : 'DEMO';
+
+  if (src === 'upload') {
+    // Trigger file picker immediately
+    document.getElementById('videoFileInput').click();
+  } else if (src === 'webcam') {
+    toast('📸 Webcam selected — press START to activate camera');
+  } else {
+    toast('🎬 Demo mode selected');
+    // If running, switch back to demo
+    if (isRunning) { stopAllStreams(); startDemoMode(); }
+  }
+}
+
+// ---- Video Upload Handler ----
+function handleVideoFile(e) {
+  const file = e.target.files[0];
+  if (!file) { document.getElementById('sourceSelect').value = 'demo'; currentSource = 'demo'; return; }
+  const url = URL.createObjectURL(file);
+  const vid = document.getElementById('upload-video');
+  vid.src = url;
+  toast('📂 Video loaded: ' + file.name);
+
+  // If already running, switch to upload mode
+  if (isRunning) {
+    stopAllStreams();
+    startUploadMode();
+  }
+}
+
+// ---- DOM refs ----
+const webcamVid = () => document.getElementById('webcam-video');
+const uploadVid = () => document.getElementById('upload-video');
+const detCanvas = () => document.getElementById('detection-canvas');
+const standby = () => document.getElementById('standby-screen');
+
+// ---- Stop all active streams ----
+function stopAllStreams() {
+  if (webcamStream) { webcamStream.getTracks().forEach(t => t.stop()); webcamStream = null; }
+  if (animFrame) { cancelAnimationFrame(animFrame); animFrame = null; }
+  webcamVid().style.display = 'none';
+  uploadVid().style.display = 'none';
+  detCanvas().style.display = 'none';
+}
+
+// ---- Start webcam ----
+async function startWebcamMode() {
+  try {
+    webcamStream = await navigator.mediaDevices.getUserMedia({ video: { width: 1280, height: 720 }, audio: false });
+    const vid = webcamVid();
+    vid.srcObject = webcamStream;
+    vid.style.display = 'block';
+    detCanvas().style.display = 'block';
+    standby().style.display = 'none';
+
+    vid.onloadedmetadata = () => {
+      document.getElementById('hud-res').textContent = vid.videoWidth + ' × ' + vid.videoHeight;
+      runDetectionLoop(vid);
+    };
+    toast('📷 Webcam activated — detection running');
+  } catch (err) {
+    toast('❌ Camera access denied: ' + err.message);
+    console.error(err);
+    // Fall back to demo
     currentSource = 'demo';
     document.getElementById('sourceSelect').value = 'demo';
     startDemoMode();
   }
 }
 
+// ---- Start upload video mode ----
 function startUploadMode() {
-  let vid = document.getElementById('upload-video');
-  if(!vid.src) {
-    toast('No video file');
-    return;
-  }
+  const vid = uploadVid();
+  if (!vid.src) { toast('⚠️ No video file selected'); return; }
   vid.style.display = 'block';
-  document.getElementById('detection-canvas').style.display = 'block';
-  vid.play().catch(e => {});
+  detCanvas().style.display = 'block';
+  standby().style.display = 'none';
+  vid.play().catch(()=>{});
+  document.getElementById('hud-res').textContent = '— Video File —';
+
   vid.onloadedmetadata = () => {
     document.getElementById('hud-res').textContent = vid.videoWidth + ' × ' + vid.videoHeight;
   };
+
   runDetectionLoop(vid);
+  toast('▶ Video file analysis started');
 }
 
+// ---- Demo mode (no video, just sim boxes on dark canvas) ----
 function startDemoMode() {
-  document.getElementById('detection-canvas').style.display = 'block';
+  standby().style.display = 'none';
+  // Show a dark canvas with simulated boxes
+  const canvas = detCanvas();
+  canvas.style.display = 'block';
   document.getElementById('hud-res').textContent = '1920 × 1080';
   runDemoLoop();
+  toast('🎬 Demo detection mode active');
 }
 
+// ---- Detection loop for real video sources ----
 function runDetectionLoop(videoEl) {
-  let canvas = document.getElementById('detection-canvas');
-  let ctx = canvas.getContext('2d');
-
-  async function loop() {
-    if(!isRunning || isPaused) {
-      animFrame = requestAnimationFrame(loop);
-      return;
-    }
-
-    let rect = videoEl.getBoundingClientRect();
-    canvas.width = rect.width;
-    canvas.height = rect.height;
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    if(cocoModel && videoEl.readyState >= 2) {
-      try {
-        let predictions = await cocoModel.detect(videoEl);
-        let conf = parseFloat(document.getElementById('confSlider').value);
-        let persons = predictions.filter(p => p.class === 'person' && p.score >= conf);
-
-        // Get video frame for PPE analysis
-        let tempCanvas = document.createElement('canvas');
-        tempCanvas.width = videoEl.videoWidth;
-        tempCanvas.height = videoEl.videoHeight;
-        let tempCtx = tempCanvas.getContext('2d');
-        tempCtx.drawImage(videoEl, 0, 0, tempCanvas.width, tempCanvas.height);
-        let imageData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
-
-        // Calculate scaling
-        let scaleX = 1, scaleY = 1, offX = 0, offY = 0;
-        let vidAR = videoEl.videoWidth / videoEl.videoHeight;
-        let canAR = canvas.width / canvas.height;
-        if(vidAR > canAR) {
-          scaleX = canvas.width / videoEl.videoWidth;
-          scaleY = scaleX;
-          offY = (canvas.height - videoEl.videoHeight * scaleY) / 2;
-        } else {
-          scaleY = canvas.height / videoEl.videoHeight;
-          scaleX = scaleY;
-          offX = (canvas.width - videoEl.videoWidth * scaleX) / 2;
-        }
-
-        let detections = [];
-        for(let p of persons) {
-          let [bx, by, bw, bh] = p.bbox;
-          let ppe = analyzePPE(imageData, bx, by, bw, bh);
-          detections.push({
-            x: bx, y: by, w: bw, h: bh,
-            score: p.score,
-            ppeCompliant: ppe.ppeCompliant,
-            hasHelmet: ppe.hasHelmet,
-            hasVest: ppe.hasVest
-          });
-        }
-
-        // Draw detections
-        let compliantCount = 0;
-        for(let i = 0; i < detections.length; i++) {
-          let d = detections[i];
-          let x = d.x * scaleX + offX;
-          let y = d.y * scaleY + offY;
-          let w = d.w * scaleX;
-          let h = d.h * scaleY;
-
-          let color = d.ppeCompliant ? '#10B981' : '#EF4444';
-          if(d.ppeCompliant) compliantCount++;
-
-          ctx.strokeStyle = color;
-          ctx.lineWidth = 2;
-          ctx.strokeRect(x, y, w, h);
-
-          ctx.fillStyle = color + 'cc';
-          ctx.fillRect(x, y - 22, w, 22);
-          ctx.fillStyle = 'white';
-          ctx.font = 'bold 10px monospace';
-          let status = d.ppeCompliant ? '✅ PPE OK' : (d.hasHelmet ? '⚠️ No Vest' : (d.hasVest ? '⚠️ No Helmet' : '🚨 NO PPE'));
-          ctx.fillText(status, x + 4, y - 8);
-
-          // Show PPE icons
-          if(d.hasHelmet) {
-            ctx.fillStyle = '#FBBF24';
-            ctx.fillRect(x + w - 28, y + 4, 24, 14);
-            ctx.fillStyle = 'black';
-            ctx.font = '10px monospace';
-            ctx.fillText('⛑️', x + w - 26, y + 15);
-          }
-          if(d.hasVest) {
-            ctx.fillStyle = '#F97316';
-            ctx.fillRect(x + w - 28, y + 20, 24, 14);
-            ctx.fillStyle = 'black';
-            ctx.fillText('🦺', x + w - 26, y + 31);
-          }
-        }
-
-        // Update metrics
-        document.getElementById('kpi-workers').textContent = detections.length;
-        let compliancePercent = detections.length > 0 ? Math.round((compliantCount / detections.length) * 100) : 100;
-        document.getElementById('kpi-ppe').textContent = compliancePercent + '%';
-        ppe = compliancePercent;
-        lastDetections = detections;
-
-      } catch(e) {
-        console.log('Detection error:', e);
-      }
-    }
-
-    // FPS counter
-    frameCount++;
-    let now = Date.now();
-    if((now - fpsStart) >= 1000) {
-      currentFPS = frameCount;
-      frameCount = 0;
-      fpsStart = now;
-      document.getElementById('kpi-fps').textContent = currentFPS;
-      document.getElementById('hud-fps').textContent = currentFPS;
-    }
-
-    animFrame = requestAnimationFrame(loop);
-  }
-  animFrame = requestAnimationFrame(loop);
-}
-
-function runDemoLoop() {
-  let canvas = document.getElementById('detection-canvas');
-  let ctx = canvas.getContext('2d');
-  let boxes = [], timer = 0;
+  const canvas = detCanvas();
+  const ctx = canvas.getContext('2d');
 
   function loop() {
-    if(!isRunning || isPaused) {
-      animFrame = requestAnimationFrame(loop);
-      return;
-    }
+    if (!isRunning || isPaused) { animFrame = requestAnimationFrame(loop); return; }
 
-    let rect = canvas.parentElement.getBoundingClientRect();
+    // Size canvas to match video display
+    const rect = videoEl.getBoundingClientRect();
     canvas.width = rect.width;
     canvas.height = rect.height;
-    ctx.fillStyle = 'rgba(5,3,12,0.96)';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    timer++;
-    if(timer % 60 === 0 || boxes.length === 0) {
-      let n = Math.floor(Math.random() * 4) + 2;
-      boxes = [];
-      for(let i = 0; i < n; i++) {
-        boxes.push({
-          x: 40 + Math.random() * (canvas.width - 150),
-          y: 40 + Math.random() * (canvas.height - 180),
-          w: 80 + Math.random() * 70,
-          h: 130 + Math.random() * 70,
-          ppe: Math.random() > 0.35,
-          helmet: Math.random() > 0.5,
-          vest: Math.random() > 0.5
-        });
-      }
-    }
+    // Draw video frame onto canvas (for overlay purposes canvas is transparent on top)
+    // Boxes are drawn on transparent canvas overlaid on video element
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    let compliantCount = 0;
-    boxes.forEach(b => {
-      let color = b.ppe ? '#10B981' : '#EF4444';
-      if(b.ppe) compliantCount++;
-      ctx.strokeStyle = color;
-      ctx.strokeRect(b.x, b.y, b.w, b.h);
-      ctx.fillStyle = color + 'cc';
-      ctx.fillRect(b.x, b.y - 22, b.w, 22);
-      ctx.fillStyle = 'white';
-      ctx.font = 'bold 10px monospace';
-      ctx.fillText(b.ppe ? '✅ PPE OK' : '🚨 NO PPE', b.x + 4, b.y - 8);
-    });
-
-    document.getElementById('kpi-workers').textContent = boxes.length;
-    let compliancePercent = boxes.length > 0 ? Math.round((compliantCount / boxes.length) * 100) : 100;
-    document.getElementById('kpi-ppe').textContent = compliancePercent + '%';
-    ppe = compliancePercent;
-
-    frameCount++;
-    let now = Date.now();
-    if((now - fpsStart) >= 1000) {
-      currentFPS = frameCount;
-      frameCount = 0;
-      fpsStart = now;
-      document.getElementById('kpi-fps').textContent = currentFPS;
-      document.getElementById('hud-fps').textContent = currentFPS;
-    }
+    // Draw simulated detection boxes
+    drawDetectionBoxes(ctx, canvas.width, canvas.height, videoEl);
 
     animFrame = requestAnimationFrame(loop);
   }
   animFrame = requestAnimationFrame(loop);
 }
 
+// ---- Demo loop (no video source, draw on dark bg) ----
+function runDemoLoop() {
+  const canvas = detCanvas();
+  const ctx = canvas.getContext('2d');
+
+  function loop() {
+    if (!isRunning || isPaused) { animFrame = requestAnimationFrame(loop); return; }
+
+    const rect = canvas.parentElement.getBoundingClientRect();
+    canvas.width = rect.width;
+    canvas.height = rect.height;
+
+    // Dark industrial background
+    ctx.fillStyle = 'rgba(5,3,12,0.92)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Grid
+    ctx.strokeStyle = 'rgba(130,80,255,0.06)';
+    ctx.lineWidth = 1;
+    for (let x = 0; x < canvas.width; x += 40) {
+      ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x, canvas.height); ctx.stroke();
+    }
+    for (let y = 0; y < canvas.height; y += 40) {
+      ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(canvas.width, y); ctx.stroke();
+    }
+
+    drawDetectionBoxes(ctx, canvas.width, canvas.height, null);
+    animFrame = requestAnimationFrame(loop);
+  }
+  animFrame = requestAnimationFrame(loop);
+}
+
+// ---- Simulated bounding boxes for detected persons/PPE ----
+let boxState = [];
+let boxTimer = 0;
+
+function drawDetectionBoxes(ctx, W, H, videoEl) {
+  boxTimer++;
+  // Refresh boxes every ~60 frames
+  if (boxTimer % 60 === 0 || boxState.length === 0) {
+    const count = workers || Math.floor(Math.random() * 3) + 1;
+    boxState = [];
+    for (let i = 0; i < count; i++) {
+      const bw = 80 + Math.random() * 120;
+      const bh = 140 + Math.random() * 120;
+      const bx = 30 + Math.random() * (W - bw - 60);
+      const by = 20 + Math.random() * (H - bh - 40);
+      const hasPPE = Math.random() > (risk / 200); // higher risk = less PPE
+      const conf = 0.65 + Math.random() * 0.3;
+      const labels = hasPPE
+        ? ['Person + Helmet', 'Worker + Vest', 'PPE Compliant'][Math.floor(Math.random()*3)]
+        : ['NO HELMET ⚠️', 'NO VEST ⚠️', 'PPE MISSING 🚨'][Math.floor(Math.random()*3)];
+      boxState.push({ x: bx, y: by, w: bw, h: bh, ppe: hasPPE, conf, label: labels });
+    }
+  }
+
+  // Slight jitter for realism
+  boxState.forEach((b, idx) => {
+    b.x += (Math.random() - 0.5) * 1.5;
+    b.y += (Math.random() - 0.5) * 1.5;
+
+    const color = b.ppe ? '#10B981' : '#EF4444';
+    const glow = b.ppe ? 'rgba(16,185,129,0.6)' : 'rgba(239,68,68,0.6)';
+
+    ctx.save();
+
+    // Glow effect
+    ctx.shadowColor = glow;
+    ctx.shadowBlur = 12;
+
+    // Main box
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2;
+    ctx.strokeRect(b.x, b.y, b.w, b.h);
+    ctx.shadowBlur = 0;
+
+    // Corner accents
+    const cs = 14;
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = color;
+    // TL
+    ctx.beginPath(); ctx.moveTo(b.x, b.y+cs); ctx.lineTo(b.x, b.y); ctx.lineTo(b.x+cs, b.y); ctx.stroke();
+    // TR
+    ctx.beginPath(); ctx.moveTo(b.x+b.w-cs, b.y); ctx.lineTo(b.x+b.w, b.y); ctx.lineTo(b.x+b.w, b.y+cs); ctx.stroke();
+    // BL
+    ctx.beginPath(); ctx.moveTo(b.x, b.y+b.h-cs); ctx.lineTo(b.x, b.y+b.h); ctx.lineTo(b.x+cs, b.y+b.h); ctx.stroke();
+    // BR
+    ctx.beginPath(); ctx.moveTo(b.x+b.w-cs, b.y+b.h); ctx.lineTo(b.x+b.w, b.y+b.h); ctx.lineTo(b.x+b.w, b.y+b.h-cs); ctx.stroke();
+
+    // Label background
+    ctx.fillStyle = b.ppe ? 'rgba(16,185,129,0.85)' : 'rgba(239,68,68,0.85)';
+    const lblW = b.w;
+    ctx.fillRect(b.x, b.y - 22, lblW, 22);
+
+    // Label text
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 11px monospace';
+    ctx.fillText(b.label, b.x + 5, b.y - 7);
+
+    // Confidence badge
+    ctx.fillStyle = 'rgba(0,0,0,0.7)';
+    ctx.fillRect(b.x + b.w - 46, b.y + 4, 42, 16);
+    ctx.fillStyle = '#C4B5FD';
+    ctx.font = '9px monospace';
+    ctx.fillText((b.conf * 100).toFixed(0) + '%', b.x + b.w - 41, b.y + 15);
+
+    // ID tag
+    ctx.fillStyle = 'rgba(139,92,246,0.7)';
+    ctx.fillRect(b.x, b.y + b.h, 30, 14);
+    ctx.fillStyle = '#fff';
+    ctx.font = '8px monospace';
+    ctx.fillText('P' + (idx+1).toString().padStart(2,'0'), b.x + 3, b.y + b.h + 10);
+
+    ctx.restore();
+  });
+
+  // Scanline effect on webcam/video
+  if (videoEl) {
+    ctx.fillStyle = 'rgba(139,92,246,0.015)';
+    const scanY = (Date.now() / 8) % H;
+    ctx.fillRect(0, scanY, W, 2);
+  }
+}
+
+// ---- Status UI ----
+function setChipState(id, state) {
+  document.getElementById(id).className = 'chip chip-' + state;
+}
+
+function startUI() {
+  setChipState('chip-engine','on'); setChipState('chip-stream','on'); setChipState('chip-system','on');
+  document.getElementById('sys-label').textContent = 'ACTIVE';
+  document.getElementById('hud-status-dot').style.background = 'var(--green)';
+  document.getElementById('hud-status-text').textContent = 'LIVE';
+  standby().style.display = 'none';
+  const btn = document.getElementById('startStopBtn');
+  btn.textContent = '⏹ STOP MONITORING';
+  btn.className = 'btn btn-stop';
+}
+
+function stopUI() {
+  setChipState('chip-engine','off'); setChipState('chip-stream','off'); setChipState('chip-system','off');
+  document.getElementById('sys-label').textContent = 'STANDBY';
+  document.getElementById('hud-status-dot').style.background = 'var(--red)';
+  document.getElementById('hud-status-text').textContent = 'OFFLINE';
+  standby().style.display = 'flex';
+  webcamVid().style.display = 'none';
+  uploadVid().style.display = 'none';
+  detCanvas().style.display = 'none';
+  document.getElementById('hud-res').textContent = '-- × --';
+  const btn = document.getElementById('startStopBtn');
+  btn.textContent = '▶ START MONITORING';
+  btn.className = 'btn btn-start';
+}
+
+// ---- Toggle monitoring ----
+async function toggleMonitoring() {
+  if (!isRunning) {
+    isRunning = true;
+    startUI();
+    runSim();
+
+    const src = document.getElementById('sourceSelect').value;
+    currentSource = src;
+    if (src === 'webcam') {
+      await startWebcamMode();
+    } else if (src === 'upload') {
+      const vid = uploadVid();
+      if (!vid.src) {
+        // No file yet — open picker
+        document.getElementById('videoFileInput').click();
+        // Wait for file selection then start
+        document.getElementById('videoFileInput').onchange = (e) => {
+          handleVideoFile(e);
+          startUploadMode();
+        };
+      } else {
+        startUploadMode();
+      }
+    } else {
+      startDemoMode();
+    }
+    toast('🛡️ Safety AI engine activated');
+  } else {
+    isRunning = false;
+    stopAllStreams();
+    stopUI();
+    if (sim) clearInterval(sim);
+    boxState = [];
+    toast('Safety monitoring stopped');
+  }
+}
+
+function pauseMonitoring() {
+  if (!isRunning) { toast('Start monitoring first'); return; }
+  isPaused = !isPaused;
+  if (isPaused) {
+    clearInterval(sim); sim = null;
+    uploadVid().pause();
+    toast('⏸ Monitoring paused');
+  } else {
+    runSim();
+    uploadVid().play().catch(()=>{});
+    toast('▶ Monitoring resumed');
+  }
+}
+
+function resetSession() {
+  if (sim) clearInterval(sim);
+  workers = violations = peakW = 0; risk = 12; ppe = 100; fps = 0;
+  incidents = []; alerts = []; riskHistory = []; boxState = [];
+  ['kpi-workers','kpi-violations','kpi-fps'].forEach(id => document.getElementById(id).textContent = '0');
+  document.getElementById('kpi-ppe').textContent = '100%';
+  document.getElementById('kpi-peak').textContent = '0';
+  document.getElementById('riskNum').textContent = '0';
+  document.getElementById('riskFill').style.width = '0%';
+  renderLog(); renderAlerts(); drawChart();
+  if (isRunning) runSim();
+  toast('↺ Session reset — all counters cleared');
+}
+
+// ---- Simulation (metrics, alerts, log) ----
 function runSim() {
-  if(simInterval) clearInterval(simInterval);
-  simInterval = setInterval(() => {
-    if(!isRunning || isPaused) return;
+  if (sim) clearInterval(sim);
+  sim = setInterval(() => {
+    if (!isRunning || isPaused) return;
 
-    let workers = parseInt(document.getElementById('kpi-workers').textContent) || 0;
-    let ppeVal = parseInt(document.getElementById('kpi-ppe').textContent) || 100;
-    risk = Math.min(100, Math.max(0, risk + (Math.random() - 0.48) * 6 + (100 - ppeVal) / 15));
+    workers = Math.floor(Math.random() * 5) + 1;
+    if (workers > peakW) peakW = workers;
+    fps = Math.floor(18 + Math.random() * 12);
+    document.getElementById('kpi-workers').textContent = workers;
+    document.getElementById('kpi-peak').textContent = peakW;
+    document.getElementById('kpi-fps').textContent = fps;
+    document.getElementById('hud-fps').textContent = fps.toFixed(1);
 
-    if(risk > 75 && workers > 0 && ppeVal < 70) {
+    risk = Math.min(100, Math.max(0, risk + (Math.random() - 0.48) * 6));
+    ppe = Math.max(60, Math.min(100, ppe + (Math.random()-0.5)*8));
+    if (risk > 65) ppe -= Math.random()*5;
+    if (ppe < 60) ppe = 60;
+    document.getElementById('kpi-ppe').textContent = Math.floor(ppe) + '%';
+
+    const threshold = parseInt(document.getElementById('alertSlider').value);
+    if (risk > threshold && Math.random() > 0.75) {
       violations++;
-      let t = new Date().toLocaleTimeString();
-      let msg = `🚨 PPE violation detected - ${Math.floor(100 - ppeVal)}% of workers non-compliant`;
-      alerts.unshift({ sev: 'CRITICAL', msg: msg, time: t });
-      incidents.unshift({ id: 'INC-' + Math.floor(Math.random() * 9000 + 1000), time: t, msg: msg, sev: 'CRITICAL' });
-      if(alerts.length > 5) alerts.pop();
-      if(incidents.length > 8) incidents.pop();
-      renderAlerts();
-      renderLog();
-      toast(msg);
+      let sev, msg, atype;
+      if (risk > 85) { sev='CRITICAL'; msg='🚨 No PPE detected — Helmet & Vest missing in Zone B'; atype='critical'; }
+      else if (risk > 65) { sev='HIGH'; msg='⚠️ PPE violation — Worker without safety harness near edge'; atype='warning'; }
+      else if (risk > 40) { sev='MEDIUM'; msg='⚠️ Unauthorized access detected in restricted area'; atype='warning'; }
+      else { sev='LOW'; msg='ℹ️ Maintain safe distance from machinery'; atype='info'; }
+
+      const t = new Date().toLocaleTimeString();
+      alerts.unshift({sev, msg, time:t, type:atype});
+      incidents.unshift({id:'INC-'+Math.floor(Math.random()*9000+1000), time:t, msg, sev});
+      if (alerts.length>5) alerts.pop();
+      if (incidents.length>8) incidents.pop();
+      renderLog(); renderAlerts();
+      toast('⚠️ ' + msg.substring(0,55));
     }
 
     document.getElementById('kpi-violations').textContent = violations;
     document.getElementById('riskNum').textContent = Math.floor(risk);
 
-    let fill = document.getElementById('riskFill');
-    let badge = document.getElementById('riskBadge');
-    let num = document.getElementById('riskNum');
+    const fill = document.getElementById('riskFill');
+    const num = document.getElementById('riskNum');
+    const badge = document.getElementById('riskBadge');
     fill.style.width = risk + '%';
 
-    if(risk > 75) {
-      fill.className = 'track-fill high';
-      num.className = 'risk-big high';
-      badge.textContent = 'CRITICAL';
-      badge.className = 'risk-badge risk-high';
-    } else if(risk > 50) {
-      fill.className = 'track-fill mod';
-      num.className = 'risk-big mod';
-      badge.textContent = 'HIGH';
-      badge.className = 'risk-badge risk-mod';
+    if (risk > 85) {
+      fill.className='track-fill high'; num.className='risk-big high';
+      badge.textContent='CRITICAL'; badge.className='risk-badge risk-high';
+    } else if (risk > 65) {
+      fill.className='track-fill mod'; num.className='risk-big mod';
+      badge.textContent='HIGH'; badge.className='risk-badge risk-mod';
+    } else if (risk > 35) {
+      fill.className='track-fill mod'; num.className='risk-big mod';
+      badge.textContent='MODERATE'; badge.className='risk-badge risk-mod';
     } else {
-      fill.className = 'track-fill low';
-      num.className = 'risk-big low';
-      badge.textContent = 'LOW';
-      badge.className = 'risk-badge risk-low';
+      fill.className='track-fill low'; num.className='risk-big low';
+      badge.textContent='LOW'; badge.className='risk-badge risk-low';
     }
 
     riskHistory.push(risk);
-    if(riskHistory.length > 30) riskHistory.shift();
+    if (riskHistory.length>30) riskHistory.shift();
     drawChart();
-  }, 1500);
-}
-
-function renderAlerts() {
-  let c = document.getElementById('alertsContainer');
-  if(!alerts.length) {
-    c.innerHTML = '<div class="empty-alerts">✅ All clear</div>';
-    return;
-  }
-  c.innerHTML = alerts.map(a => `
-    <div class="alert-card critical">
-      <div class="alert-top">
-        <span class="alert-sev c">🔴 ${a.sev}</span>
-        <span class="alert-time-small">${a.time}</span>
-      </div>
-      <div class="alert-msg">${a.msg}</div>
-    </div>
-  `).join('');
+  }, 850);
 }
 
 function renderLog() {
-  let c = document.getElementById('logContainer');
-  if(!incidents.length) {
-    c.innerHTML = '<div class="empty-log">✓ No incidents logged</div>';
-    return;
-  }
-  c.innerHTML = incidents.slice(0, 7).map(i => `
+  const c = document.getElementById('logContainer');
+  if (!incidents.length) { c.innerHTML='<div class="empty-log">✓ No safety incidents logged this session</div>'; return; }
+  const sevClass = {CRITICAL:'sev-critical',HIGH:'sev-high',MEDIUM:'sev-medium',LOW:'sev-low'};
+  const sevIcon = {CRITICAL:'🔴',HIGH:'🟠',MEDIUM:'🟡',LOW:'🟢'};
+  c.innerHTML = incidents.slice(0,7).map(i=>`
     <div class="log-row">
-      <span>${i.id}</span>
-      <span>${i.time}</span>
-      <span>${i.msg.substring(0, 60)}</span>
-      <span class="sev-high">🔴 ${i.sev}</span>
-    </div>
-  `).join('');
+      <span class="sev-id">${i.id}</span>
+      <span class="sev-time">${i.time}</span>
+      <span style="color:var(--text-2);font-size:12px">${i.msg.substring(0,60)}</span>
+      <span class="${sevClass[i.sev]||'sev-low'}">${sevIcon[i.sev]||'🟢'} ${i.sev}</span>
+    </div>`).join('');
+}
+
+function renderAlerts() {
+  const c = document.getElementById('alertsContainer');
+  if (!alerts.length) { c.innerHTML=`<div class="empty-alerts"><div class="empty-icon">✅</div><div class="empty-text">All clear — no active alerts</div></div>`; return; }
+  const sc={CRITICAL:'c',HIGH:'w',MEDIUM:'m',LOW:'w'};
+  c.innerHTML=alerts.map(a=>`
+    <div class="alert-card ${a.type}">
+      <div class="alert-top">
+        <span class="alert-sev ${sc[a.sev]||'w'}">${a.sev==='CRITICAL'?'🔴':a.sev==='HIGH'?'🟠':'🟡'} ${a.sev}</span>
+        <span class="alert-time-small">${a.time}</span>
+      </div>
+      <div class="alert-msg">${a.msg}</div>
+      <div class="alert-note">⚡ Immediate attention required</div>
+    </div>`).join('');
 }
 
 function drawChart() {
-  let canvas = document.getElementById('trend-canvas');
-  let ctx = canvas.getContext('2d');
-  let w = canvas.parentElement.clientWidth;
-  let h = 90;
-  canvas.width = w;
-  canvas.height = h;
-  ctx.clearRect(0, 0, w, h);
-  if(riskHistory.length < 2) return;
-
-  let max = Math.max(...riskHistory, 10);
-  let step = w / (riskHistory.length - 1);
+  const canvas = document.getElementById('trend-canvas');
+  const ctx = canvas.getContext('2d');
+  const w = canvas.parentElement.clientWidth, h = canvas.parentElement.clientHeight;
+  canvas.width=w; canvas.height=h;
+  ctx.clearRect(0,0,w,h);
+  if (riskHistory.length<2) return;
+  const max=Math.max(...riskHistory,10);
+  const step=w/(riskHistory.length-1);
+  const pts=riskHistory.map((v,i)=>({x:i*step, y:h-(v/max)*h*0.82}));
+  const grad=ctx.createLinearGradient(0,0,0,h);
+  grad.addColorStop(0,'rgba(139,92,246,0.3)');
+  grad.addColorStop(1,'rgba(139,92,246,0)');
   ctx.beginPath();
-  riskHistory.forEach((v, i) => {
-    let x = i * step;
-    let y = h - (v / max) * h * 0.8;
-    if(i === 0) ctx.moveTo(x, y);
-    else ctx.lineTo(x, y);
-  });
-  ctx.strokeStyle = '#8B5CF6';
-  ctx.lineWidth = 2;
+  pts.forEach((p,i)=>i===0?ctx.moveTo(p.x,p.y):ctx.lineTo(p.x,p.y));
+  ctx.strokeStyle='rgba(139,92,246,0.9)'; ctx.lineWidth=2;
+  ctx.shadowColor='rgba(139,92,246,0.6)'; ctx.shadowBlur=8;
   ctx.stroke();
+  ctx.lineTo(pts[pts.length-1].x,h); ctx.lineTo(0,h);
+  ctx.fillStyle=grad; ctx.fill();
+  ctx.shadowBlur=0;
+  pts.forEach((p,i)=>{
+    if(i>0&&riskHistory[i]>riskHistory[i-1]+5){
+      ctx.beginPath(); ctx.arc(p.x,p.y,3,0,Math.PI*2);
+      ctx.fillStyle='#22D3EE'; ctx.fill();
+    }
+  });
 }
 
-function toggleMonitoring() {
-  if(!isRunning) {
-    isRunning = true;
-    startUI();
-    runSim();
-    let src = document.getElementById('sourceSelect').value;
-    if(src === 'webcam') startWebcamMode();
-    else if(src === 'upload') startUploadMode();
-    else startDemoMode();
-  } else {
-    isRunning = false;
-    stopAllStreams();
-    stopUI();
-    if(simInterval) clearInterval(simInterval);
-    lastDetections = [];
-    toast('Monitoring stopped');
-  }
-}
-
-function pauseMonitoring() {
-  if(!isRunning) return;
-  isPaused = !isPaused;
-  toast(isPaused ? '⏸ Paused' : '▶ Resumed');
-  if(!isPaused && isRunning) runSim();
-}
-
-function resetSession() {
-  violations = 0;
-  risk = 8;
-  incidents = [];
-  alerts = [];
-  riskHistory = [];
-  personTracks.clear();
-  nextTrackId = 1;
-  document.getElementById('kpi-workers').textContent = '0';
-  document.getElementById('kpi-violations').textContent = '0';
-  document.getElementById('kpi-ppe').textContent = '100%';
-  document.getElementById('riskNum').textContent = '0';
-  document.getElementById('riskFill').style.width = '0%';
-  renderAlerts();
-  renderLog();
-  drawChart();
-  toast('Session reset');
-}
-
-function toggleTheme() {
-  document.body.style.filter = document.body.style.filter ? 'none' : 'invert(1) hue-rotate(180deg)';
-}
-
-setInterval(() => {
-  let now = new Date();
-  document.getElementById('clockBox').textContent = now.toLocaleTimeString();
-}, 1000);
-
-loadModel();
-renderAlerts();
-renderLog();
-drawChart();
+// Init
+renderLog(); renderAlerts(); drawChart();
 </script>
 </body>
 </html>

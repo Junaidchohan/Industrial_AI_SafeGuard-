@@ -770,7 +770,6 @@ def render_upload_section():
 # ============================================================================
 
 # Add at the top with other imports:
-from ultralytics import YOLO
 
 # Replace the entire SafetyDetector class with:
 # Add this import at the top (around line 10):
